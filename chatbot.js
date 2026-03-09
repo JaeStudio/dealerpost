@@ -1,5 +1,5 @@
 /**
- * DealerPost AI — Alex Chatbot Widget
+ * DealerPost AI — Ava Chatbot Widget
  * Drop-in floating chatbot for dealerpostai.com
  * Usage: <script src="chatbot.js"></script> before </body>
  */
@@ -8,18 +8,18 @@
 
   // ─── Config ───────────────────────────────────────────────────────────────
   var ENDPOINT = 'https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/chat';
-  var BOT_NAME = 'Alex';
+  var BOT_NAME = 'Ava';
   var GOLD     = '#f0c84a';
   var DARK_BG  = '#0d0d1e';
   var CARD_BG  = '#13132b';
   var BORDER   = 'rgba(240,200,74,0.18)';
 
-  var WELCOME_MSG = "Hey! I'm Alex from DealerPost AI. What's on your mind today?";
+  var WELCOME_MSG = "Hey there! I'm Ava 👋 I'm here to help with anything — whether it's about DealerPost AI or just a question you've got. What's on your mind?";
 
   // Conversation history sent to the API
   var history = [];
 
-  // Track how many times user directly asked if Alex is human/AI
+  // Track how many times user directly asked if Ava is human/AI
   var identityPressCount = 0;
 
   // ─── Inject styles ────────────────────────────────────────────────────────
@@ -219,13 +219,13 @@
   var toggle = document.createElement('div');
   toggle.id = 'dp-chat-toggle';
   toggle.setAttribute('role', 'button');
-  toggle.setAttribute('aria-label', 'Open chat with Alex');
+  toggle.setAttribute('aria-label', 'Open chat with Ava');
   toggle.innerHTML = [
-    '<div class="dp-toggle-avatar">',
-      '<span>💬</span>',
+    '<div class="dp-toggle-avatar" style="background:none;overflow:hidden;">',
+      '<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ava&hair=long&hairColor=blonde&top=longHair&accessories=prescription02&clothe=blazerAndShirt&skin=light&eyes=happy&mouth=smile" style="width:32px;height:32px;border-radius:50%;border:2px solid #f0c84a;">',
       '<div id="dp-notif-badge">1</div>',
     '</div>',
-    '<span class="dp-toggle-label">Chat with Alex 👋</span>',
+    '<span class="dp-toggle-label">Chat with Ava 👋</span>',
   ].join('');
   document.body.appendChild(toggle);
 
@@ -233,11 +233,11 @@
   var win = document.createElement('div');
   win.id = 'dp-chat-window';
   win.setAttribute('role', 'dialog');
-  win.setAttribute('aria-label', 'Chat with Alex from DealerPost AI');
+  win.setAttribute('aria-label', 'Chat with Ava from DealerPost AI');
   win.innerHTML = [
     '<div id="dp-chat-header">',
-      '<div class="dp-header-avatar">',
-        '🤖',
+      '<div class="dp-header-avatar" style="background:none;overflow:hidden;">',
+        '<img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Ava&hair=long&hairColor=blonde&top=longHair&accessories=prescription02&clothe=blazerAndShirt&skin=light&eyes=happy&mouth=smile" style="width:36px;height:36px;border-radius:50%;border:2px solid #f0c84a;">',
         '<div class="dp-online-dot"></div>',
       '</div>',
       '<div class="dp-header-info">',
@@ -366,7 +366,7 @@
 
     // Build messages payload — include system prompt inline for context
     var systemPrompt = [
-      'You are Alex, a friendly human-sounding assistant for DealerPost AI — a tool that helps car dealerships generate AI-powered vehicle listings and social media captions.',
+      'You are Ava, a friendly human-sounding assistant for DealerPost AI — a tool that helps car dealerships generate AI-powered vehicle listings and social media captions.',
       '',
       'Personality: Warm, conversational, real. You talk like a person, not a corporate bot. You can discuss anything — sports, weather, life — but always find a natural way to connect it back to DealerPost AI, car dealerships, or the automotive industry.',
       '',
