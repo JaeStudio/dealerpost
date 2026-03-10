@@ -25,6 +25,14 @@ body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;o
 .bg-noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.015;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
 .bg-vig{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(2,2,10,.75) 100%)}
 
+/* Gold ambient glow — full page radial layer */
+.bg-gold-ambient{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 18% 55%, rgba(200,146,42,.055) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 35% at 82% 30%, rgba(240,200,74,.035) 0%, transparent 65%);
+}
+
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
 nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
 .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
@@ -45,24 +53,129 @@ nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28p
 .contact-wrap{width:100%;max-width:960px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
 
 /* LEFT */
-.contact-left{padding-top:8px}
-.contact-kicker{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold2);border:1px solid var(--bh);padding:6px 16px;border-radius:2px;background:rgba(200,146,42,.04);margin-bottom:32px}
+.contact-left{padding-top:8px;position:relative}
+
+/* Ambient orb behind the title */
+.contact-title-orb{
+  position:absolute;
+  top:-40px;left:-60px;
+  width:340px;height:260px;
+  background:radial-gradient(ellipse at 40% 40%, rgba(200,146,42,.09) 0%, transparent 70%);
+  pointer-events:none;
+  filter:blur(18px);
+  z-index:0;
+}
+
+.contact-kicker{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold2);border:1px solid var(--bh);padding:6px 16px;border-radius:2px;background:rgba(200,146,42,.04);margin-bottom:32px;position:relative;z-index:1}
 .kicker-dot{width:5px;height:5px;background:var(--gold2);border-radius:50%;animation:kp 2.5s ease-in-out infinite;box-shadow:0 0 6px var(--gold2)}
 @keyframes kp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.7)}}
-.contact-title{font-family:'Syncopate',sans-serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;letter-spacing:4px;line-height:1.15;margin-bottom:20px}
+.contact-title{font-family:'Syncopate',sans-serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;letter-spacing:4px;line-height:1.15;margin-bottom:10px;position:relative;z-index:1}
 .contact-title em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.contact-sub{font-size:15px;font-weight:300;color:rgba(238,238,248,.6);line-height:1.8;margin-bottom:48px;max-width:380px}
 
-.contact-info{display:flex;flex-direction:column;gap:20px}
-.ci-item{display:flex;align-items:flex-start;gap:14px}
+/* Warm italic subheadline */
+.contact-warmline{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:300;
+  font-size:clamp(17px,1.8vw,21px);
+  color:rgba(219,168,60,.72);
+  margin-bottom:6px;
+  letter-spacing:.5px;
+  line-height:1.5;
+  position:relative;z-index:1;
+}
+
+/* "No bots" italic tagline */
+.contact-no-bots{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:300;
+  font-size:13px;
+  color:rgba(238,238,248,.38);
+  margin-bottom:28px;
+  letter-spacing:.3px;
+  position:relative;z-index:1;
+}
+
+.contact-sub{font-size:15px;font-weight:300;color:rgba(238,238,248,.58);line-height:1.8;margin-bottom:48px;max-width:380px;position:relative;z-index:1}
+
+.contact-info{display:flex;flex-direction:column;gap:20px;position:relative;z-index:1}
+.ci-item{
+  display:flex;align-items:flex-start;gap:14px;
+  border-left:2px solid transparent;
+  padding-left:10px;
+  margin-left:-12px;
+  transition:border-color .25s ease, padding-left .25s ease;
+  border-radius:2px;
+}
+.ci-item:hover{
+  border-color:var(--gold);
+  padding-left:14px;
+}
 .ci-icon{width:36px;height:36px;border-radius:8px;border:1px solid var(--bh);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(200,146,42,.04);font-size:14px}
 .ci-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
 .ci-val{font-size:13px;color:rgba(238,238,248,.75)}
 .ci-val a{color:var(--gold2);text-decoration:none;transition:color .2s}
 .ci-val a:hover{color:var(--gold3)}
 
+/* Trust snippet */
+.contact-trust{
+  margin-top:48px;
+  padding:20px 22px;
+  border-left:2px solid rgba(200,146,42,.35);
+  background:rgba(200,146,42,.03);
+  border-radius:0 8px 8px 0;
+  position:relative;z-index:1;
+}
+.trust-stars{
+  display:flex;gap:3px;margin-bottom:8px;
+}
+.trust-star{
+  color:var(--gold2);
+  font-size:13px;
+  text-shadow:0 0 8px rgba(219,168,60,.5);
+}
+.trust-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:300;
+  font-size:15px;
+  color:rgba(240,200,74,.8);
+  line-height:1.55;
+  margin-bottom:6px;
+}
+.trust-attribution{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--dim);
+}
+
 /* RIGHT — FORM */
-.contact-form-card{background:var(--card);border:1px solid var(--b);border-radius:16px;padding:40px 36px}
+.contact-form-card{
+  background:var(--card);
+  border:1px solid var(--b);
+  border-top:2px solid var(--gold);
+  border-radius:16px;
+  padding:40px 36px;
+  box-shadow:
+    inset 0 0 40px rgba(200,146,42,.04),
+    0 24px 80px rgba(0,0,0,.35);
+}
+
+/* Warm greeting above inputs */
+.form-greeting{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:300;
+  font-size:14px;
+  color:rgba(238,238,248,.35);
+  margin-bottom:24px;
+  letter-spacing:.2px;
+  line-height:1.5;
+}
+
 .form-row{margin-bottom:20px}
 .form-row label{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
 .form-row input,
@@ -84,14 +197,35 @@ nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28p
 .form-row textarea{resize:vertical;min-height:90px;line-height:1.6}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 
+/* Submit button with gold shimmer on hover */
 .btn-submit{
-  width:100%;padding:14px 24px;background:var(--solid-gold);
+  width:100%;padding:14px 24px;
+  background:var(--solid-gold);
   color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;
   font-weight:500;letter-spacing:2.5px;text-transform:uppercase;
   border:none;border-radius:8px;cursor:pointer;
   box-shadow:0 6px 28px rgba(184,131,30,.28);
   transition:all .3s cubic-bezier(.23,1,.32,1);
   display:flex;align-items:center;justify-content:center;gap:10px;
+  position:relative;overflow:hidden;
+}
+.btn-submit::after{
+  content:'';
+  position:absolute;
+  top:0;left:-75%;
+  width:50%;height:100%;
+  background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.22) 50%, transparent 100%);
+  transform:skewX(-18deg);
+  opacity:0;
+  transition:opacity .1s;
+}
+.btn-submit:hover::after{
+  animation:shimmer-sweep .65s cubic-bezier(.23,1,.32,1) forwards;
+  opacity:1;
+}
+@keyframes shimmer-sweep{
+  0%  { left:-75%; opacity:1 }
+  100%{ left:130%; opacity:0.4 }
 }
 .btn-submit:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(184,131,30,.42)}
 .btn-submit:active{transform:translateY(0)}
@@ -119,6 +253,8 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
   .contact-form-card{padding:28px 20px}
   .form-grid{grid-template-columns:1fr}
   footer{padding:24px 20px;flex-direction:column;text-align:center}
+  .contact-title-orb{width:260px;height:180px;top:-20px;left:-20px}
+  .ci-item{margin-left:-8px}
 }
 </style>
 </head>
@@ -127,6 +263,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
 <div class="bg-grid"></div>
 <div class="bg-noise"></div>
 <div class="bg-vig"></div>
+<div class="bg-gold-ambient"></div>
 
 <nav id="nav">
   <a href="index.html" class="nav-brand">
@@ -148,40 +285,61 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
 
     <!-- LEFT -->
     <div class="contact-left">
+      <div class="contact-title-orb"></div>
+
       <div class="contact-kicker">
         <div class="kicker-dot"></div>
         Get in Touch
       </div>
+
       <h1 class="contact-title">Let's talk.<br><em>We respond fast.</em></h1>
-      <p class="contact-sub">Whether you're ready to get started, have a question about pricing, or just want to see DealerPost AI in action — we're here.</p>
+      <p class="contact-warmline">We'd love to hear from you.</p>
+      <p class="contact-no-bots">No bots. No wait queues. Just us.</p>
+
+      <p class="contact-sub">Whether you're ready to get started, curious about what DealerPost AI can do for your lot, or just want a real conversation with a real person — reach out. We genuinely enjoy hearing from dealerships.</p>
 
       <div class="contact-info">
         <div class="ci-item">
-          <div class="ci-icon">✉</div>
+          <div class="ci-icon">&#x2709;</div>
           <div>
             <div class="ci-label">Email</div>
             <div class="ci-val"><a href="mailto:hello@dealerpostai.com">hello@dealerpostai.com</a></div>
           </div>
         </div>
         <div class="ci-item">
-          <div class="ci-icon">⚡</div>
+          <div class="ci-icon">&#x26A1;</div>
           <div>
             <div class="ci-label">Response Time</div>
-            <div class="ci-val">Within one business day, Mon – Fri</div>
+            <div class="ci-val">Within one business day, Mon &ndash; Fri</div>
           </div>
         </div>
         <div class="ci-item">
-          <div class="ci-icon">🤖</div>
+          <div class="ci-icon">&#x1F916;</div>
           <div>
             <div class="ci-label">Instant Help</div>
-            <div class="ci-val">Chat with Ava — bottom right corner</div>
+            <div class="ci-val">Chat with Ava &mdash; bottom right corner</div>
           </div>
         </div>
+      </div>
+
+      <!-- Trust snippet -->
+      <div class="contact-trust">
+        <div class="trust-stars">
+          <span class="trust-star">&#9733;</span>
+          <span class="trust-star">&#9733;</span>
+          <span class="trust-star">&#9733;</span>
+          <span class="trust-star">&#9733;</span>
+          <span class="trust-star">&#9733;</span>
+        </div>
+        <p class="trust-quote">"Saved us hours every single week. The captions basically write themselves now."</p>
+        <p class="trust-attribution">&#x2014; City Motors</p>
       </div>
     </div>
 
     <!-- RIGHT — FORM -->
     <div class="contact-form-card">
+      <p class="form-greeting">Fill in the form &mdash; we read every message.</p>
+
       <form id="contactForm" novalidate>
 
         <div class="form-grid">
