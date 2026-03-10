@@ -90,7 +90,7 @@
       'flex-shrink:0;',
     '}',
     '#dp-chat-header .dp-header-avatar{',
-      'width:42px;height:42px;border-radius:50%;',
+      'width:52px;height:52px;border-radius:50%;',
       'display:flex;align-items:center;justify-content:center;',
       'font-size:18px;flex-shrink:0;position:relative;overflow:visible;',
       'box-shadow:0 0 0 2px rgba(240,200,74,0.4),0 0 20px rgba(240,200,74,0.15);',
@@ -257,7 +257,7 @@
   toggle.setAttribute('aria-label', 'Open chat with Ava');
   toggle.innerHTML = [
     '<div class="dp-toggle-avatar" style="background:none;overflow:hidden;">',
-      '<img src="https://raw.githubusercontent.com/JaeStudio/DealerPost/master/ava.jpg" style="width:32px;height:32px;border-radius:50%;border:2px solid #f0c84a;object-fit:cover;object-position:center 15%;">',
+      '<img src="https://raw.githubusercontent.com/JaeStudio/DealerPost/master/ava.jpg" style="width:38px;height:38px;border-radius:50%;border:2px solid #f0c84a;object-fit:cover;object-position:center 5%;">',
       '<div id="dp-notif-badge">1</div>',
     '</div>',
     '<span class="dp-toggle-label">Chat with Ava 👋</span>',
@@ -272,7 +272,7 @@
   win.innerHTML = [
     '<div id="dp-chat-header">',
       '<div class="dp-header-avatar" style="background:none;overflow:hidden;">',
-        '<img src="https://raw.githubusercontent.com/JaeStudio/DealerPost/master/ava.jpg" style="width:36px;height:36px;border-radius:50%;border:2px solid #f0c84a;object-fit:cover;object-position:center 15%;">',
+        '<img src="https://raw.githubusercontent.com/JaeStudio/DealerPost/master/ava.jpg" style="width:48px;height:48px;border-radius:50%;border:2.5px solid #f0c84a;object-fit:cover;object-position:center 5%;box-shadow:0 0 16px rgba(240,200,74,0.3);">',
         '<div class="dp-online-dot"></div>',
       '</div>',
       '<div class="dp-header-info">',
