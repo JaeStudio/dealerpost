@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — DealerPost AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#02020a;--deep:#05050f;--surf:#08081a;--card:#0d0d1e;--lift:#121228;
+  --gold:#c8922a;--gold2:#dba83c;--gold3:#f0c84a;--gold4:#fce88a;
+  --solid-gold:#b8831e;
+  --text:#eeeef8;--dim:#5a5a80;--muted:#28283a;
+  --b:rgba(200,146,42,.09);--bh:rgba(200,146,42,.22);
+}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;font-weight:300}
+
+#cd{position:fixed;width:4px;height:4px;background:var(--gold3);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#cr{position:fixed;width:30px;height:30px;border:1px solid rgba(240,200,74,.28);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),border-color .3s}
+
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(200,146,42,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(200,146,42,.022) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent 75%)}
+.bg-noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.015;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+.bg-vig{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(2,2,10,.75) 100%)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
+nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo-img{height:38px;width:38px;object-fit:cover;object-position:top center;background:transparent;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s}
+.nav-brand:hover .nav-logo-img{filter:drop-shadow(0 0 18px rgba(240,200,74,.65))}
+.nav-wordmark{font-family:'Syncopate',sans-serif;font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.8)}
+.nav-wordmark em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(238,238,248,.78);text-decoration:none;transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--gold3)}
+.nav-cta{color:var(--text) !important;background:var(--solid-gold);padding:10px 24px;border-radius:3px;box-shadow:0 4px 20px rgba(184,131,30,.3);transition:all .3s !important;letter-spacing:1.5px !important}
+.nav-cta:hover{background:var(--gold2) !important;transform:translateY(-1px);box-shadow:0 8px 32px rgba(184,131,30,.45) !important}
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.burger span{display:block;width:22px;height:1.5px;background:var(--text);transition:all .3s}
+
+/* PAGE */
+.contact-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 24px 80px;position:relative;z-index:2}
+.contact-wrap{width:100%;max-width:960px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
+
+/* LEFT */
+.contact-left{padding-top:8px}
+.contact-kicker{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold2);border:1px solid var(--bh);padding:6px 16px;border-radius:2px;background:rgba(200,146,42,.04);margin-bottom:32px}
+.kicker-dot{width:5px;height:5px;background:var(--gold2);border-radius:50%;animation:kp 2.5s ease-in-out infinite;box-shadow:0 0 6px var(--gold2)}
+@keyframes kp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.7)}}
+.contact-title{font-family:'Syncopate',sans-serif;font-size:clamp(26px,3.5vw,42px);font-weight:700;letter-spacing:4px;line-height:1.15;margin-bottom:20px}
+.contact-title em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.contact-sub{font-size:15px;font-weight:300;color:rgba(238,238,248,.6);line-height:1.8;margin-bottom:48px;max-width:380px}
+
+.contact-info{display:flex;flex-direction:column;gap:20px}
+.ci-item{display:flex;align-items:flex-start;gap:14px}
+.ci-icon{width:36px;height:36px;border-radius:8px;border:1px solid var(--bh);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:rgba(200,146,42,.04);font-size:14px}
+.ci-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:3px}
+.ci-val{font-size:13px;color:rgba(238,238,248,.75)}
+.ci-val a{color:var(--gold2);text-decoration:none;transition:color .2s}
+.ci-val a:hover{color:var(--gold3)}
+
+/* RIGHT — FORM */
+.contact-form-card{background:var(--card);border:1px solid var(--b);border-radius:16px;padding:40px 36px}
+.form-row{margin-bottom:20px}
+.form-row label{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+.form-row input,
+.form-row select,
+.form-row textarea{
+  width:100%;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.09);border-radius:8px;
+  padding:12px 16px;color:var(--text);font-family:'DM Sans',sans-serif;
+  font-size:14px;font-weight:300;outline:none;transition:border-color .2s;
+  appearance:none;-webkit-appearance:none;
+}
+.form-row input::placeholder,
+.form-row textarea::placeholder{color:rgba(238,238,248,.25)}
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus{border-color:rgba(200,146,42,.45)}
+.form-row select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235a5a80' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;cursor:pointer}
+.form-row select option{background:#0d0d1e;color:var(--text)}
+.form-row textarea{resize:vertical;min-height:90px;line-height:1.6}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.btn-submit{
+  width:100%;padding:14px 24px;background:var(--solid-gold);
+  color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;
+  font-weight:500;letter-spacing:2.5px;text-transform:uppercase;
+  border:none;border-radius:8px;cursor:pointer;
+  box-shadow:0 6px 28px rgba(184,131,30,.28);
+  transition:all .3s cubic-bezier(.23,1,.32,1);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-submit:hover{background:var(--gold2);transform:translateY(-2px);box-shadow:0 12px 40px rgba(184,131,30,.42)}
+.btn-submit:active{transform:translateY(0)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.form-status{margin-top:16px;padding:12px 16px;border-radius:8px;font-size:13px;text-align:center;display:none}
+.form-status.success{background:rgba(0,229,154,.08);border:1px solid rgba(0,229,154,.2);color:#00e59a;display:block}
+.form-status.error{background:rgba(255,64,96,.08);border:1px solid rgba(255,64,96,.2);color:#ff4060;display:block}
+
+/* Footer */
+footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.footer-copy{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
+.footer-links{display:flex;gap:28px}
+.footer-links a{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold2)}
+
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  nav.stuck{padding:12px 20px}
+  .burger{display:flex}
+  .nav-links{position:fixed;top:0;left:0;width:100%;height:100%;background:#02020a;flex-direction:column;align-items:center;justify-content:center;gap:36px;z-index:9999;list-style:none;opacity:0;pointer-events:none;transform:translateY(-12px);transition:all .35s cubic-bezier(.23,1,.32,1)}
+  .nav-links.open{opacity:1;pointer-events:all;transform:translateY(0)}
+  .contact-wrap{grid-template-columns:1fr;gap:40px}
+  .contact-page{padding:100px 20px 60px}
+  .contact-form-card{padding:28px 20px}
+  .form-grid{grid-template-columns:1fr}
+  footer{padding:24px 20px;flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+<div id="cd"></div><div id="cr"></div>
+<div class="bg-grid"></div>
+<div class="bg-noise"></div>
+<div class="bg-vig"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-brand">
+    <img src="logo.jpg" alt="DealerPost AI" class="nav-logo-img">
+    <span class="nav-wordmark">Dealer<em>Post</em> AI</span>
+  </a>
+  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="features.html">Features</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+    <li><a href="pricing.html#plans" class="nav-cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<main class="contact-page">
+  <div class="contact-wrap">
+
+    <!-- LEFT -->
+    <div class="contact-left">
+      <div class="contact-kicker">
+        <div class="kicker-dot"></div>
+        Get in Touch
+      </div>
+      <h1 class="contact-title">Let's talk.<br><em>We respond fast.</em></h1>
+      <p class="contact-sub">Whether you're ready to get started, have a question about pricing, or just want to see DealerPost AI in action — we're here.</p>
+
+      <div class="contact-info">
+        <div class="ci-item">
+          <div class="ci-icon">✉</div>
+          <div>
+            <div class="ci-label">Email</div>
+            <div class="ci-val"><a href="mailto:hello@dealerpostai.com">hello@dealerpostai.com</a></div>
+          </div>
+        </div>
+        <div class="ci-item">
+          <div class="ci-icon">⚡</div>
+          <div>
+            <div class="ci-label">Response Time</div>
+            <div class="ci-val">Within one business day, Mon – Fri</div>
+          </div>
+        </div>
+        <div class="ci-item">
+          <div class="ci-icon">🤖</div>
+          <div>
+            <div class="ci-label">Instant Help</div>
+            <div class="ci-val">Chat with Ava — bottom right corner</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT — FORM -->
+    <div class="contact-form-card">
+      <form id="contactForm" novalidate>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" placeholder="Jane Smith" required>
+          </div>
+          <div class="form-row">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="jane@yourdealership.com" required>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="dealership">Dealership Name</label>
+            <input type="text" id="dealership" name="dealership" placeholder="City Motors Toyota">
+          </div>
+          <div class="form-row">
+            <label for="role">Your Role</label>
+            <select id="role" name="role">
+              <option value="">Select role...</option>
+              <option>Owner</option>
+              <option>General Manager</option>
+              <option>Marketing Manager</option>
+              <option>Sales Manager</option>
+              <option>Social Media Manager</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="subject">What can we help you with? *</label>
+          <select id="subject" name="subject" required>
+            <option value="">Select a topic...</option>
+            <option>Book a Free Demo</option>
+            <option>Pricing &amp; Plans</option>
+            <option>Chrome Extension Help</option>
+            <option>Billing &amp; Subscription</option>
+            <option>Partnership / Wholesale</option>
+            <option>Feature Request</option>
+            <option>I'm just browsing</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="message">Message <span style="color:var(--dim);font-size:8px">(optional)</span></label>
+          <textarea id="message" name="message" placeholder="Anything else you'd like us to know..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span id="btnText">Send Message</span>
+          <svg id="btnIcon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+
+        <div class="form-status" id="formStatus"></div>
+
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span class="footer-copy">&copy; 2025 DealerPost AI</span>
+  <nav class="footer-links">
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</footer>
+
+<script src="chatbot.js"></script>
+<script>
+// Cursor
+var cd=document.getElementById('cd'),cr=document.getElementById('cr');
+document.addEventListener('mousemove',function(e){cd.style.left=e.clientX+'px';cd.style.top=e.clientY+'px';cr.style.left=e.clientX+'px';cr.style.top=e.clientY+'px'});
+
+// Nav sticky
+var nav=document.getElementById('nav');
+window.addEventListener('scroll',function(){nav.classList.toggle('stuck',window.scrollY>40)});
+
+// Mobile burger
+var burger=document.getElementById('burger'),links=document.getElementById('navLinks');
+if(burger)burger.addEventListener('click',function(){burger.classList.toggle('open');links.classList.toggle('open');document.body.style.overflow=links.classList.contains('open')?'hidden':''});
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var btn    = document.getElementById('submitBtn');
+  var status = document.getElementById('formStatus');
+  var btnTxt = document.getElementById('btnText');
+
+  var name       = document.getElementById('name').value.trim();
+  var email      = document.getElementById('email').value.trim();
+  var dealership = document.getElementById('dealership').value.trim();
+  var role       = document.getElementById('role').value;
+  var subject    = document.getElementById('subject').value;
+  var message    = document.getElementById('message').value.trim();
+
+  if (!name || !email || !subject) {
+    status.className = 'form-status error';
+    status.textContent = 'Please fill in your name, email, and select a topic.';
+    return;
+  }
+
+  btn.disabled = true;
+  btnTxt.textContent = 'Sending...';
+  status.className = 'form-status';
+  status.textContent = '';
+
+  try {
+    var res = await fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, dealership, role, subject, message })
+    });
+    var data = await res.json();
+
+    if (data.success) {
+      status.className = 'form-status success';
+      status.textContent = "Message sent! We'll be in touch within one business day.";
+      document.getElementById('contactForm').reset();
+    } else {
+      throw new Error(data.error || 'Unknown error');
+    }
+  } catch(err) {
+    status.className = 'form-status error';
+    status.textContent = 'Something went wrong. Please email us directly at hello@dealerpostai.com';
+  } finally {
+    btn.disabled = false;
+    btnTxt.textContent = 'Send Message';
+  }
+});
+</script>
+</body>
+</html>
