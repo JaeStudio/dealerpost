@@ -34,10 +34,10 @@ body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;o
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
 nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
 .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
-.nav-logo{height:44px;width:auto;flex-shrink:0;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s;display:block;overflow:visible}
+.nav-logo{height:44px;width:44px;object-fit:contain;flex-shrink:0;display:block;overflow:visible}
 .nav-brand:hover .nav-logo{filter:drop-shadow(0 0 18px rgba(240,200,74,.65))}
 /* Hide legacy inline SVG, show only img logo */
-.nav-logo:not(img){display:none!important}
+
 .nav-wordmark{font-family:'Syncopate',sans-serif;font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.8)}
 .nav-wordmark em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .nav-v{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--dim);border:1px solid var(--bh);padding:2px 7px;border-radius:2px}
