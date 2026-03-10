@@ -14,7 +14,7 @@ jobs:
       - name: Send Weekly Newsletter
         run: |
           RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
-            https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/send-newsletter \
+            "https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/send-newsletter" \
             -H "Authorization: Bearer ${{ secrets.NEWSLETTER_SECRET }}" \
             -H "Content-Type: application/json" \
             -d '{}')
@@ -22,12 +22,14 @@ jobs:
           HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
           BODY=$(echo "$RESPONSE" | head -n -1)
 
-          echo "Response: $BODY"
           echo "HTTP Status: $HTTP_CODE"
+          echo "Response Body: $BODY"
 
           if [ "$HTTP_CODE" != "200" ]; then
-            echo "Newsletter send FAILED with status $HTTP_CODE"
+            echo "ERROR: Newsletter send failed with HTTP $HTTP_CODE"
+            echo "Body: $BODY"
             exit 1
           fi
 
-          echo "Newsletter sent successfully!"
+          SENT=$(echo "$BODY" | grep -o '"sent":[0-9]*' | grep -o '[0-9]*')
+          echo "Success! Sent to $SENT subscribers."
