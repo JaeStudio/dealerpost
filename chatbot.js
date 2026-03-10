@@ -347,6 +347,37 @@
 
   // ─── API call ─────────────────────────────────────────────────────────────
 
+  function fetchWithTimeout(url, options, timeoutMs) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () {
+        reject(new Error('Request timed out after ' + timeoutMs + 'ms'));
+      }, timeoutMs);
+
+      fetch(url, options).then(function (res) {
+        clearTimeout(timer);
+        resolve(res);
+      }).catch(function (err) {
+        clearTimeout(timer);
+        reject(err);
+      });
+    });
+  }
+
+  function callAPI(payload, attempt) {
+    return fetchWithTimeout(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }, 15000).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (body) {
+          throw new Error('HTTP ' + res.status + ': ' + body);
+        });
+      }
+      return res.json();
+    });
+  }
+
   function sendMessage(userText) {
     if (!userText.trim()) return;
 
@@ -364,52 +395,61 @@
     showTyping();
     sendBtn.disabled = true;
 
-    // Build messages payload — include system prompt inline for context
-    var systemPrompt = [
-      'You are Ava, a friendly human-sounding assistant for DealerPost AI — a tool that helps car dealerships generate AI-powered vehicle listings and social media captions.',
-      '',
-      'Personality: Warm, conversational, real. You talk like a person, not a corporate bot. You can discuss anything — sports, weather, life — but always find a natural way to connect it back to DealerPost AI, car dealerships, or the automotive industry.',
-      '',
-      'Rules:',
-      '- Never say you are an AI or a bot' + (identityPressCount < 3 ? ' unless absolutely forced after 3+ direct attempts' : '. The user has pressed you — stay warm but pivot gracefully.'),
-      '- Always end your response with a gentle question steering toward DealerPost AI',
-      '- Keep responses SHORT — 2-4 sentences max',
-      '- Sound human. Use contractions. Be real.',
-      '- If they ask about pricing, features, or the product, be enthusiastic and accurate:',
-      '  - Solo plan: $99/mo, 1 seat',
-      '  - Dealer Pro: $495/mo, up to 20 seats',
-      '  - Features: AI vehicle listing captions, social media post generation, Chrome extension',
-      '  - Website: dealerpostai.com/pricing',
-    ].join('\n');
-
     var payload = {
-      messages: [{ role: 'system', content: systemPrompt }].concat(history),
+      messages: history,
     };
 
-    fetch(ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-      .then(function (res) {
-        if (!res.ok) throw new Error('Network response ' + res.status);
-        return res.json();
-      })
+    callAPI(payload, 1)
       .then(function (data) {
         hideTyping();
         var reply = (data && data.reply) ? data.reply : "Sorry, I hit a snag — try again in a sec!";
         history.push({ role: 'assistant', content: reply });
         appendMsg('bot', reply);
+        sendBtn.disabled = false;
       })
       .catch(function (err) {
+        console.warn('[DealerPost AI Chat] First attempt failed:', err);
+        // Show a soft "hold on" message and auto-retry once after 2 seconds
         hideTyping();
-        var fallback = "Oops, seems like I lost my train of thought — connection hiccup. Try again!";
-        appendMsg('bot', fallback);
-        console.warn('[DealerPost AI Chat]', err);
-      })
-      .finally(function () {
-        sendBtn.disabled = false;
+        var thinkingMsg = appendTempMsg('bot', 'Hmm, give me just a sec... \uD83E\uDD14');
+        setTimeout(function () {
+          if (thinkingMsg && thinkingMsg.parentNode) {
+            thinkingMsg.parentNode.removeChild(thinkingMsg);
+          }
+          showTyping();
+          callAPI(payload, 2)
+            .then(function (data) {
+              hideTyping();
+              var reply = (data && data.reply) ? data.reply : "Sorry, I hit a snag — try again in a sec!";
+              history.push({ role: 'assistant', content: reply });
+              appendMsg('bot', reply);
+            })
+            .catch(function (retryErr) {
+              hideTyping();
+              console.warn('[DealerPost AI Chat] Retry also failed:', retryErr);
+              appendMsg('bot', "Sorry about that — something went sideways on my end. Mind trying again?");
+            })
+            .finally(function () {
+              sendBtn.disabled = false;
+            });
+        }, 2000);
       });
+  }
+
+  // Like appendMsg but returns the wrapper element so it can be removed
+  function appendTempMsg(role, text) {
+    var typing = messagesEl.querySelector('#dp-typing');
+    var wrapper = document.createElement('div');
+    wrapper.className = 'dp-msg ' + (role === 'user' ? 'dp-user' : 'dp-bot');
+
+    var bubble = document.createElement('div');
+    bubble.className = 'dp-bubble';
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+    messagesEl.insertBefore(wrapper, typing);
+    scrollBottom();
+    return wrapper;
   }
 
   // ─── Events ───────────────────────────────────────────────────────────────
