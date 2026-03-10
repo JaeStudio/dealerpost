@@ -257,7 +257,7 @@
   toggle.setAttribute('aria-label', 'Open chat with Ava');
   toggle.innerHTML = [
     '<div class="dp-toggle-avatar" style="background:none;overflow:hidden;">',
-      '<img src="https://dealerpostai.com/ava.jpg" style="width:32px;height:32px;border-radius:50%;border:2px solid #f0c84a;object-fit:cover;object-position:center 15%;">',
+      '<img src="https://raw.githubusercontent.com/JaeStudio/DealerPost/master/ava.jpg" style="width:32px;height:32px;border-radius:50%;border:2px solid #f0c84a;object-fit:cover;object-position:center 15%;">',
       '<div id="dp-notif-badge">1</div>',
     '</div>',
     '<span class="dp-toggle-label">Chat with Ava 👋</span>',
@@ -272,7 +272,7 @@
   win.innerHTML = [
     '<div id="dp-chat-header">',
       '<div class="dp-header-avatar" style="background:none;overflow:hidden;">',
-        '<img src="https://dealerpostai.com/ava.jpg" style="width:36px;height:36px;border-radius:50%;border:2px solid #f0c84a;object-fit:cover;object-position:center 15%;">',
+        '<img src="https://raw.githubusercontent.com/JaeStudio/DealerPost/master/ava.jpg" style="width:36px;height:36px;border-radius:50%;border:2px solid #f0c84a;object-fit:cover;object-position:center 15%;">',
         '<div class="dp-online-dot"></div>',
       '</div>',
       '<div class="dp-header-info">',
