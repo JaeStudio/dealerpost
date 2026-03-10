@@ -34,7 +34,7 @@
 
     /* ── Toggle button ─────────────────────────────────────────────────────── */
     '#dp-chat-toggle{',
-      'position:fixed;bottom:24px;right:24px;z-index:99999;',
+      'position:fixed;bottom:24px;left:24px;z-index:99999;',
       'display:flex;align-items:center;gap:10px;',
       'background:linear-gradient(135deg,#0d0d1e 0%,#111128 100%);',
       'border:1px solid rgba(240,200,74,0.35);',
@@ -64,7 +64,7 @@
 
     /* ── Chat window ───────────────────────────────────────────────────────── */
     '#dp-chat-window{',
-      'position:fixed;bottom:86px;right:24px;z-index:99998;',
+      'position:fixed;bottom:86px;left:24px;z-index:99998;',
       'width:380px;max-width:calc(100vw - 16px);',
       'height:540px;max-height:calc(100vh - 110px);',
       'background:linear-gradient(160deg,#0d0d1f 0%,#080815 100%);',
@@ -239,7 +239,7 @@
         'bottom:80px;height:calc(100vh - 140px);max-height:none;',
         'border-radius:20px;',
       '}',
-      '#dp-chat-toggle{right:16px;bottom:16px;padding:9px 16px 9px 9px;}',
+      '#dp-chat-toggle{left:16px;bottom:16px;padding:9px 16px 9px 9px;}',
       '#dp-chat-toggle .dp-toggle-label{font-size:12px;}',
       '#dp-chat-toggle .dp-toggle-avatar{width:32px;height:32px;}',
       '#dp-chat-input{font-size:16px;}',

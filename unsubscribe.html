@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unsubscribe — DealerPost AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,400&family=Syncopate:wght@400;700&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400;9..40,500&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --void:#02020a;--deep:#05050f;--surf:#08081a;--card:#0d0d1e;--lift:#121228;
+  --gold:#c8922a;--gold2:#dba83c;--gold3:#f0c84a;--gold4:#fce88a;
+  --solid-gold:#b8831e;
+  --text:#eeeef8;--dim:#5a5a80;--muted:#28283a;
+  --green:#00e59a;--blue:#3888ff;--red:#ff4060;
+  --b:rgba(200,146,42,.09);--bh:rgba(200,146,42,.22);
+}
+html{scroll-behavior:smooth}
+body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;font-weight:300;min-height:100vh;display:flex;flex-direction:column}
+
+/* CURSOR */
+#cd{position:fixed;width:4px;height:4px;background:var(--gold3);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
+#cr{position:fixed;width:30px;height:30px;border:1px solid rgba(240,200,74,.28);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),border-color .3s}
+
+/* BG */
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(200,146,42,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(200,146,42,.022) 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent 75%)}
+.bg-noise{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.015;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
+.bg-vig{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(2,2,10,.75) 100%)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
+nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
+.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.nav-logo-img{height:42px;width:auto;object-fit:contain;background:transparent;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s;display:block;flex-shrink:0}
+.nav-brand:hover .nav-logo-img{filter:drop-shadow(0 0 18px rgba(240,200,74,.65))}
+.nav-wordmark{font-family:'Syncopate',sans-serif;font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.8)}
+.nav-wordmark em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-v{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--dim);border:1px solid var(--bh);padding:2px 7px;border-radius:2px}
+.nav-links{display:flex;align-items:center;gap:36px;list-style:none}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(238,238,248,.78);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--gold3)}
+.nav-cta{color:var(--text) !important;background:var(--solid-gold);padding:10px 24px;border-radius:3px;box-shadow:0 4px 20px rgba(184,131,30,.3);transition:all .3s !important;letter-spacing:1.5px !important}
+.nav-cta:hover{background:var(--gold2) !important;transform:translateY(-1px);box-shadow:0 8px 32px rgba(184,131,30,.45) !important}
+.nav-ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.nav-ham span{display:block;width:22px;height:1.5px;background:rgba(238,238,248,.7);transition:all .3s}
+
+/* MAIN */
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:140px 24px 80px;position:relative;z-index:2}
+
+/* CARD */
+.unsub-card{
+  width:100%;
+  max-width:480px;
+  background:rgba(13,13,30,.85);
+  border:1px solid var(--b);
+  border-radius:16px;
+  padding:52px 48px;
+  backdrop-filter:blur(24px) saturate(1.4);
+  box-shadow:0 0 0 1px rgba(200,146,42,.04),0 32px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.04);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  animation:cardIn .7s cubic-bezier(.23,1,.32,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+.card-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:320px;height:160px;background:radial-gradient(ellipse,rgba(200,146,42,.09),transparent 70%);pointer-events:none}
+.card-border-top{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(240,200,74,.35),transparent)}
+
+.unsub-kicker{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--gold2);margin-bottom:20px;display:inline-flex;align-items:center;gap:8px}
+.kicker-dot{width:4px;height:4px;background:var(--gold2);border-radius:50%;animation:kp 2.5s ease-in-out infinite;box-shadow:0 0 6px var(--gold2);flex-shrink:0}
+@keyframes kp{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(1.7)}}
+
+.unsub-heading{font-family:'Syncopate',sans-serif;font-size:clamp(22px,4vw,32px);font-weight:700;letter-spacing:4px;background:linear-gradient(90deg,var(--gold),var(--gold3),var(--gold4),var(--gold3),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:250% auto;animation:flowg 6s ease-in-out infinite;margin-bottom:14px}
+@keyframes flowg{0%{background-position:0% center}50%{background-position:100% center}100%{background-position:0% center}}
+
+.unsub-sub{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:300;font-style:italic;color:rgba(238,238,248,.55);letter-spacing:2px;margin-bottom:36px}
+
+.email-display{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(200,146,42,.06);
+  border:1px solid var(--bh);
+  border-radius:6px;
+  padding:12px 20px;
+  margin-bottom:36px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;
+  color:var(--gold3);
+  letter-spacing:1px;
+  word-break:break-all;
+}
+.email-icon{font-size:14px;flex-shrink:0;opacity:.7}
+
+.no-email-note{font-size:13px;font-weight:300;color:rgba(238,238,248,.45);margin-bottom:36px;line-height:1.6}
+
+.btn-unsub{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:100%;
+  background:var(--solid-gold);
+  color:#fff;
+  font-family:'DM Sans',sans-serif;
+  font-weight:500;
+  font-size:11px;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  padding:15px 32px;
+  border-radius:4px;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 24px rgba(184,131,30,.25);
+  transition:all .35s cubic-bezier(.23,1,.32,1);
+}
+.btn-unsub:hover:not(:disabled){background:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 36px rgba(184,131,30,.4)}
+.btn-unsub:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+/* STATES */
+.state{display:none}
+.state.active{display:block}
+
+.success-icon{font-size:40px;margin-bottom:20px;opacity:.9;animation:iconIn .5s cubic-bezier(.23,1,.32,1) both}
+@keyframes iconIn{from{opacity:0;transform:scale(.6)}to{opacity:.9;transform:scale(1)}}
+.success-msg{font-size:15px;font-weight:300;color:rgba(238,238,248,.72);line-height:1.8;margin-bottom:28px}
+.success-msg strong{color:var(--gold3);font-weight:400}
+
+.error-banner{
+  background:rgba(255,64,96,.08);
+  border:1px solid rgba(255,64,96,.25);
+  border-radius:6px;
+  padding:14px 18px;
+  font-size:13px;
+  font-weight:300;
+  color:rgba(255,140,160,.9);
+  line-height:1.6;
+  margin-bottom:24px;
+  text-align:left;
+}
+
+.btn-home{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:transparent;
+  color:rgba(238,238,248,.55);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;
+  font-size:11px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  padding:12px 24px;
+  border-radius:4px;
+  text-decoration:none;
+  border:1px solid rgba(255,255,255,.1);
+  transition:all .3s;
+  margin-top:8px;
+}
+.btn-home:hover{color:var(--text);border-color:var(--bh)}
+
+/* LOADING SPINNER */
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* FOOTER */
+.footer-gold-border{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(200,146,42,.12) 20%,rgba(240,200,74,.45) 50%,rgba(200,146,42,.12) 80%,transparent 100%)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:16px 20px}
+  nav.stuck{padding:10px 20px}
+  .nav-links{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(2,2,10,.97);flex-direction:column;align-items:center;justify-content:center;gap:28px;opacity:0;pointer-events:none;transform:translateY(-8px);transition:all .35s cubic-bezier(.23,1,.32,1)}
+  .nav-links.open{opacity:1;pointer-events:all;transform:translateY(0)}
+  .nav-links a{font-size:14px;letter-spacing:3px}
+  .nav-cta{padding:14px 36px!important;font-size:12px!important}
+  .nav-ham{display:flex}
+  .unsub-card{padding:36px 24px}
+  main{padding:120px 16px 60px}
+}
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="bg-grid"></div>
+<div class="bg-noise"></div>
+<div class="bg-vig"></div>
+
+<!-- Custom cursor -->
+<div id="cd"></div>
+<div id="cr"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-brand" href="index.html">
+    <img class="nav-logo-img" src="logo.svg" alt="DealerPost AI">
+    <span class="nav-wordmark">DEALER<em>POST</em></span>
+    <span class="nav-v">AI</span>
+  </a>
+  <div class="nav-ham" id="navHam" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="pricing.html#plans" class="nav-cta">Get Started</a></li>
+  </ul>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+  <div class="unsub-card">
+    <div class="card-glow"></div>
+    <div class="card-border-top"></div>
+
+    <!-- DEFAULT STATE: confirm unsubscribe -->
+    <div id="stateDefault" class="state active">
+      <div class="unsub-kicker">
+        <span class="kicker-dot"></span>
+        Email Preferences
+      </div>
+      <h1 class="unsub-heading">Unsubscribe</h1>
+      <p class="unsub-sub">We're sorry to see you go.</p>
+
+      <div id="emailDisplay" class="email-display" style="display:none">
+        <span class="email-icon">&#9993;</span>
+        <span id="emailText"></span>
+      </div>
+      <p id="noEmailNote" class="no-email-note" style="display:none">
+        No email address was detected. Please use the unsubscribe link from your email, or contact us at <a href="mailto:hello@dealerpostai.com" style="color:var(--gold2);text-decoration:none">hello@dealerpostai.com</a>.
+      </p>
+
+      <div id="errorBanner" class="error-banner" style="display:none"></div>
+
+      <button id="btnUnsub" class="btn-unsub">
+        Unsubscribe Me
+      </button>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="stateSuccess" class="state">
+      <div class="success-icon">&#10003;</div>
+      <h2 class="unsub-heading" style="font-size:clamp(18px,3vw,24px);margin-bottom:16px">Done</h2>
+      <p class="success-msg">
+        You've been unsubscribed. You won't receive any more emails from us.<br><br>
+        If this was a mistake, reach us anytime at <strong>hello@dealerpostai.com</strong>.
+      </p>
+      <a href="https://dealerpostai.com" class="btn-home">
+        <span style="font-size:10px;opacity:.6">&#8592;</span>
+        Back to DealerPost AI
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer id="footer" style="position:relative;z-index:2;padding:56px 64px 0" class="site-footer">
+  <div class="footer-gold-border"></div>
+  <div style="max-width:1280px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;padding-bottom:48px;align-items:start">
+      <!-- Brand -->
+      <div>
+        <a href="index.html" style="display:inline-flex;align-items:center;gap:12px;text-decoration:none;margin-bottom:18px">
+          <img src="logo.svg" alt="DealerPost AI" style="height:32px;width:auto;object-fit:contain;filter:drop-shadow(0 0 8px rgba(200,146,42,.35))">
+          <span style="font-family:'Syncopate',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.7)">DEALER<span style="background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">POST</span></span>
+        </a>
+        <p style="font-size:13px;font-weight:300;color:rgba(238,238,248,.38);line-height:1.85;max-width:280px">AI-powered tools for automotive dealerships. Generate captions, qualify leads, and close deals faster.</p>
+      </div>
+      <!-- Product -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold2);margin-bottom:20px">Product</div>
+        <div style="display:flex;flex-direction:column">
+          <a href="index.html#features" style="font-size:13px;font-weight:300;color:rgba(238,238,248,.4);text-decoration:none;padding:9px 0;border-bottom:1px solid rgba(200,146,42,.05);transition:color .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.color='rgba(238,238,248,.8)'" onmouseout="this.style.color='rgba(238,238,248,.4)'"><span style="font-size:10px;color:var(--gold)">&#8594;</span>Features</a>
+          <a href="pricing.html" style="font-size:13px;font-weight:300;color:rgba(238,238,248,.4);text-decoration:none;padding:9px 0;border-bottom:1px solid rgba(200,146,42,.05);transition:color .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.color='rgba(238,238,248,.8)'" onmouseout="this.style.color='rgba(238,238,248,.4)'"><span style="font-size:10px;color:var(--gold)">&#8594;</span>Pricing</a>
+          <a href="contact.html" style="font-size:13px;font-weight:300;color:rgba(238,238,248,.4);text-decoration:none;padding:9px 0;transition:color .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.color='rgba(238,238,248,.8)'" onmouseout="this.style.color='rgba(238,238,248,.4)'"><span style="font-size:10px;color:var(--gold)">&#8594;</span>Contact</a>
+        </div>
+      </div>
+      <!-- Legal -->
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold2);margin-bottom:20px">Legal</div>
+        <div style="display:flex;flex-direction:column">
+          <a href="privacy.html" style="font-size:13px;font-weight:300;color:rgba(238,238,248,.4);text-decoration:none;padding:9px 0;border-bottom:1px solid rgba(200,146,42,.05);transition:color .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.color='rgba(238,238,248,.8)'" onmouseout="this.style.color='rgba(238,238,248,.4)'"><span style="font-size:10px;color:var(--gold)">&#8594;</span>Privacy Policy</a>
+          <a href="terms.html" style="font-size:13px;font-weight:300;color:rgba(238,238,248,.4);text-decoration:none;padding:9px 0;transition:color .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.color='rgba(238,238,248,.8)'" onmouseout="this.style.color='rgba(238,238,248,.4)'"><span style="font-size:10px;color:var(--gold)">&#8594;</span>Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(200,146,42,.07);padding:20px 0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px">&copy; 2025 DEALERPOST AI &mdash; ALL RIGHTS RESERVED</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(90,90,128,.45);letter-spacing:1px">dealerpostai.com</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── Cursor ──
+(function(){
+  var dot=document.getElementById('cd'),ring=document.getElementById('cr');
+  var mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+  function animRing(){rx+=(mx-rx)*.18;ry+=(my-ry)*.18;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
+  animRing();
+  document.querySelectorAll('a,button').forEach(function(el){
+    el.addEventListener('mouseenter',function(){ring.style.width='48px';ring.style.height='48px';ring.style.borderColor='rgba(240,200,74,.55)'});
+    el.addEventListener('mouseleave',function(){ring.style.width='30px';ring.style.height='30px';ring.style.borderColor='rgba(240,200,74,.28)'});
+  });
+})();
+
+// ── Nav stick ──
+window.addEventListener('scroll',function(){
+  document.getElementById('nav').classList.toggle('stuck',window.scrollY>40);
+});
+
+// ── Mobile hamburger ──
+document.getElementById('navHam').addEventListener('click',function(){
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// ── Unsubscribe logic ──
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var email  = (params.get('email') || '').trim().toLowerCase();
+
+  var emailDisplay = document.getElementById('emailDisplay');
+  var emailText    = document.getElementById('emailText');
+  var noEmailNote  = document.getElementById('noEmailNote');
+  var btnUnsub     = document.getElementById('btnUnsub');
+  var errorBanner  = document.getElementById('errorBanner');
+
+  if (email) {
+    emailText.textContent = email;
+    emailDisplay.style.display = 'inline-flex';
+  } else {
+    noEmailNote.style.display = 'block';
+    btnUnsub.disabled = true;
+  }
+
+  btnUnsub.addEventListener('click', function(){
+    if (!email) return;
+    setLoading(true);
+    hideError();
+
+    fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/unsubscribe', {
+      method:  'POST',
+      headers: {'Content-Type': 'application/json'},
+      body:    JSON.stringify({ email: email }),
+    })
+    .then(function(res){ return res.json().then(function(d){ return {ok:res.ok,data:d}; }); })
+    .then(function(r){
+      if (r.ok && r.data.success) {
+        showState('stateSuccess');
+      } else {
+        showError(r.data.error || 'Something went wrong. Please try again.');
+        setLoading(false);
+      }
+    })
+    .catch(function(){
+      showError('Network error. Please check your connection and try again.');
+      setLoading(false);
+    });
+  });
+
+  function setLoading(on){
+    if (on) {
+      btnUnsub.disabled = true;
+      btnUnsub.innerHTML = '<span class="spinner"></span> Processing&hellip;';
+    } else {
+      btnUnsub.disabled = false;
+      btnUnsub.textContent = 'Unsubscribe Me';
+    }
+  }
+
+  function showState(id){
+    document.getElementById('stateDefault').classList.remove('active');
+    document.getElementById('stateSuccess').classList.remove('active');
+    document.getElementById(id).classList.add('active');
+  }
+
+  function showError(msg){
+    errorBanner.textContent = msg;
+    errorBanner.style.display = 'block';
+  }
+
+  function hideError(){
+    errorBanner.style.display = 'none';
+  }
+})();
+</script>
+<script src="chatbot.js"></script>
+</body>
+</html>

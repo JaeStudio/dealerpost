@@ -36,7 +36,7 @@ body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;o
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
 nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
 .nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
-.nav-logo-img{height:38px;width:38px;object-fit:cover;object-position:top center;background:transparent;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s}
+.nav-logo-img{height:44px;width:auto;object-fit:contain;background:transparent;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s;flex-shrink:0;display:block}
 .nav-brand:hover .nav-logo-img{filter:drop-shadow(0 0 18px rgba(240,200,74,.65))}
 .nav-wordmark{font-family:'Syncopate',sans-serif;font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.8)}
 .nav-wordmark em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
@@ -267,7 +267,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
 
 <nav id="nav">
   <a href="index.html" class="nav-brand">
-    <img src="logo.jpg" alt="DealerPost AI" class="nav-logo-img">
+    <img src="logo.svg" alt="DealerPost AI" class="nav-logo-img">
     <span class="nav-wordmark">Dealer<em>Post</em> AI</span>
   </a>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -406,6 +406,14 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
 </main>
 
 <footer>
+  <div style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding-bottom:20px;border-bottom:1px solid rgba(200,146,42,.08);margin-bottom:4px;flex-wrap:wrap">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);white-space:nowrap">Get the weekly DealerPost Dispatch</span>
+    <form id="newsletterForm" novalidate style="display:flex;gap:6px;align-items:center">
+      <input id="nlEmail" type="email" placeholder="your@email.com" required style="background:rgba(4,4,12,.8);border:1px solid rgba(200,146,42,.18);border-radius:4px;padding:7px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;outline:none;width:200px;transition:border-color .2s" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(200,146,42,.18)'">
+      <button type="submit" style="background:var(--solid-gold);color:#fff;border:none;border-radius:3px;padding:7px 16px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .2s;white-space:nowrap" onmouseover="this.style.background='var(--gold2)'" onmouseout="this.style.background='var(--solid-gold)'">Subscribe</button>
+    </form>
+    <span id="nlMsg" style="display:none;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#22c55e"></span>
+  </div>
   <span class="footer-copy">&copy; 2025 DealerPost AI</span>
   <nav class="footer-links">
     <a href="privacy.html">Privacy</a>
@@ -474,6 +482,34 @@ document.getElementById('contactForm').addEventListener('submit', async function
   } finally {
     btn.disabled = false;
     btnTxt.textContent = 'Send Message';
+  }
+});
+
+// Newsletter signup
+document.getElementById('newsletterForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  var email = document.getElementById('nlEmail').value.trim();
+  var msg = document.getElementById('nlMsg');
+  if (!email) return;
+  this.querySelector('button').disabled = true;
+  this.querySelector('button').textContent = '...';
+  try {
+    var res = await fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/claim-discount', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email: email, name: 'Newsletter Subscriber', dealership: ''})
+    });
+    msg.style.display = 'inline';
+    msg.style.color = '#22c55e';
+    msg.textContent = "You're on the list!";
+    document.getElementById('nlEmail').style.display = 'none';
+    this.querySelector('button').style.display = 'none';
+  } catch(err) {
+    msg.style.display = 'inline';
+    msg.style.color = '#ff4060';
+    msg.textContent = 'Error — try again.';
+    this.querySelector('button').disabled = false;
+    this.querySelector('button').textContent = 'Subscribe';
   }
 });
 </script>

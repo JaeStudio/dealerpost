@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DealerPost AI — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --void:#02020a;
+  --deep:#05050f;
+  --surf:#08081a;
+  --card:#0d0d1e;
+  --lift:#121228;
+  --raise:#181830;
+  --gold:#f0c84a;
+  --amber:#c8922a;
+  --amber-dim:rgba(200,146,42,.18);
+  --gold-dim:rgba(240,200,74,.10);
+  --text:#eeeef8;
+  --dim:#5a5a80;
+  --muted:#28283a;
+  --border:rgba(240,200,74,.09);
+  --border-mid:rgba(240,200,74,.20);
+  --green:#00e59a;
+  --red:#ff4060;
+  --red-dim:rgba(255,64,96,.12);
+  --sidebar-w:228px;
+}
+
+html,body{height:100%;font-family:'Inter',system-ui,sans-serif;background:var(--void);color:var(--text);font-size:14px;line-height:1.5}
+body{overflow-x:hidden}
+
+/* ─── PASSWORD GATE ────────────────────────────────────── */
+#gate{
+  position:fixed;inset:0;z-index:1000;
+  background:var(--void);
+  display:flex;align-items:center;justify-content:center;
+}
+#gate.hidden{display:none}
+
+.gate-inner{
+  background:var(--card);
+  border:1px solid var(--border-mid);
+  border-radius:14px;
+  padding:52px 44px;
+  width:100%;max-width:400px;
+  display:flex;flex-direction:column;align-items:center;gap:24px;
+  box-shadow:0 0 80px rgba(240,200,74,.06);
+}
+
+.gate-logo{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--dim);text-align:center;line-height:2.2;
+}
+.gate-logo span{
+  display:block;font-size:20px;letter-spacing:3px;font-weight:500;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px;
+}
+
+.gate-title{
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--dim);font-family:'JetBrains Mono',monospace;
+}
+
+.gate-field{
+  width:100%;
+  background:var(--surf);
+  border:1px solid var(--border-mid);
+  border-radius:8px;padding:14px 16px;
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:15px;letter-spacing:3px;
+  outline:none;text-align:center;
+  transition:border-color .2s,box-shadow .2s;
+}
+.gate-field:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(200,146,42,.15)}
+.gate-field::placeholder{letter-spacing:1px;font-size:12px;color:var(--dim)}
+
+.gate-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  border:none;border-radius:8px;padding:14px 24px;
+  color:#02020a;font-weight:700;font-size:12px;letter-spacing:2px;
+  text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:opacity .2s,transform .1s;
+}
+.gate-btn:hover{opacity:.88}
+.gate-btn:active{transform:scale(.98)}
+
+.gate-error{
+  font-size:12px;color:var(--red);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:1px;min-height:18px;text-align:center;
+}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-8px)}
+  35%{transform:translateX(8px)}
+  55%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+  90%{transform:translateX(-3px)}
+}
+.shake{animation:shake .45s ease}
+
+/* ─── LAYOUT ─────────────────────────────────────────────── */
+#app{display:none;height:100vh;overflow:hidden}
+#app.visible{display:flex}
+
+/* ─── SIDEBAR ────────────────────────────────────────────── */
+.sidebar{
+  width:var(--sidebar-w);min-width:var(--sidebar-w);
+  background:var(--card);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  overflow-y:auto;flex-shrink:0;
+}
+
+.sidebar-header{
+  padding:24px 20px 20px;
+  border-bottom:1px solid var(--border);
+}
+.sidebar-brand{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--dim);line-height:2.2;
+}
+.sidebar-brand strong{
+  display:block;font-size:13px;letter-spacing:2px;font-weight:500;
+  background:linear-gradient(90deg,var(--amber),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:2px;
+}
+
+.sidebar-nav{padding:16px 0;flex:1}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 20px;
+  font-size:11px;font-weight:500;letter-spacing:1px;
+  color:var(--dim);cursor:pointer;
+  border-left:2px solid transparent;
+  transition:all .15s;text-transform:uppercase;
+}
+.nav-item:hover{color:var(--text);background:var(--gold-dim)}
+.nav-item.active{color:var(--gold);border-left-color:var(--gold);background:var(--gold-dim)}
+.nav-item svg{flex-shrink:0;opacity:.7}
+.nav-item.active svg,.nav-item:hover svg{opacity:1}
+
+.sidebar-footer{
+  padding:16px 20px;border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px;
+}
+
+/* ─── MAIN CONTENT ───────────────────────────────────────── */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+.topbar{
+  background:var(--card);border-bottom:1px solid var(--border);
+  padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;position:sticky;top:0;z-index:10;
+}
+.topbar-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);font-weight:500;
+}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.status-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px var(--green);animation:pulse-dot 2s infinite;
+}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.35}}
+.status-label{font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+
+.btn-ghost{
+  background:transparent;border:1px solid var(--border-mid);
+  border-radius:7px;padding:7px 14px;color:var(--dim);
+  font-size:10px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;
+  font-family:'JetBrains Mono',monospace;transition:border-color .2s,color .2s;
+}
+.btn-ghost:hover{border-color:var(--red);color:var(--red)}
+
+.content{padding:28px 32px;display:flex;flex-direction:column;gap:28px;flex:1}
+
+/* ─── STATS BAR ──────────────────────────────────────────── */
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.stat-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:22px 24px;
+  display:flex;flex-direction:column;gap:6px;
+  position:relative;overflow:hidden;transition:border-color .2s;
+}
+.stat-card:hover{border-color:var(--border-mid)}
+.stat-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--amber),var(--gold));
+  opacity:0;transition:opacity .2s;
+}
+.stat-card:hover::before{opacity:1}
+.stat-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);font-family:'JetBrains Mono',monospace}
+.stat-value{font-size:34px;font-weight:600;color:var(--gold);font-family:'JetBrains Mono',monospace;line-height:1.1}
+.stat-value.v-active{color:var(--green)}
+.stat-value.v-opted{color:var(--red)}
+.stat-value.v-amber{color:var(--amber)}
+.stat-sub{font-size:11px;color:var(--dim)}
+
+/* ─── SECTION CARDS ──────────────────────────────────────── */
+.section-card{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.section-head{
+  padding:18px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.section-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--amber);font-weight:500;
+}
+
+.search-input{
+  background:var(--surf);border:1px solid var(--border-mid);border-radius:6px;
+  padding:8px 12px;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;
+  outline:none;width:220px;transition:border-color .2s;
+}
+.search-input:focus{border-color:var(--amber)}
+.search-input::placeholder{color:var(--dim)}
+
+/* ─── TABLE ──────────────────────────────────────────────── */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--surf)}
+th{
+  padding:10px 16px;text-align:left;
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim);
+  font-weight:400;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td{
+  padding:12px 16px;border-bottom:1px solid var(--raise);
+  font-size:13px;color:var(--text);vertical-align:middle;
+}
+tbody tr{transition:background .12s}
+tbody tr:hover{background:var(--gold-dim)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.opted-out{opacity:.5}
+tbody tr.opted-out td{color:var(--dim)}
+
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px}
+
+.badge{
+  display:inline-block;padding:3px 9px;border-radius:5px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;font-weight:500;
+}
+.badge-active{background:rgba(0,229,154,.12);color:var(--green);border:1px solid rgba(0,229,154,.25)}
+.badge-opted{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,64,96,.25)}
+
+.empty-state{
+  padding:48px 24px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--dim);letter-spacing:1px;
+}
+.loading-row td{
+  padding:32px 16px;text-align:center;
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--dim);letter-spacing:2px;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.loading-row td{animation:blink 1.2s infinite}
+
+.table-footer{
+  padding:12px 16px;border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px;
+}
+
+/* ─── NEWSLETTER FORM ────────────────────────────────────── */
+.form-body{padding:24px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group.full{grid-column:1/-1}
+.form-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);
+}
+.form-input{
+  background:var(--surf);border:1px solid var(--border-mid);border-radius:6px;
+  padding:10px 12px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.form-input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(200,146,42,.1)}
+.form-input::placeholder{color:var(--dim)}
+.form-input[type="number"]{font-family:'JetBrains Mono',monospace}
+
+.form-actions{display:flex;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+.btn-primary{
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  border:none;border-radius:7px;padding:10px 24px;
+  color:#02020a;font-weight:700;font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:opacity .2s,transform .1s;flex-shrink:0;
+}
+.btn-primary:hover{opacity:.85}
+.btn-primary:active{transform:scale(.97)}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+
+.btn-outline{
+  background:transparent;border:1px solid var(--border-mid);border-radius:7px;
+  padding:10px 18px;color:var(--dim);font-size:11px;letter-spacing:1px;
+  text-transform:uppercase;cursor:pointer;font-family:'JetBrains Mono',monospace;
+  transition:border-color .2s,color .2s;
+}
+.btn-outline:hover{border-color:var(--amber);color:var(--text)}
+
+.response-box{
+  background:var(--surf);border:1px solid var(--border);border-radius:7px;
+  padding:14px 16px;margin-top:16px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;
+  color:var(--text);white-space:pre-wrap;word-break:break-all;
+  display:none;max-height:240px;overflow-y:auto;
+}
+.response-box.ok{border-color:rgba(0,229,154,.3);color:var(--green)}
+.response-box.err{border-color:rgba(255,64,96,.3);color:var(--red)}
+.response-box.vis{display:block}
+
+/* ─── REFRESH BUTTON ─────────────────────────────────────── */
+.btn-icon{
+  background:transparent;border:1px solid var(--border-mid);border-radius:6px;
+  padding:6px 11px;color:var(--dim);cursor:pointer;
+  display:flex;align-items:center;gap:5px;
+  font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;
+  transition:border-color .2s,color .2s;
+}
+.btn-icon:hover{border-color:var(--amber);color:var(--amber)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinning{animation:spin .8s linear infinite}
+
+/* ─── TOAST ──────────────────────────────────────────────── */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:999;
+  background:var(--card);border:1px solid var(--border-mid);border-radius:8px;
+  padding:12px 18px;font-size:11px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:1px;color:var(--text);
+  transform:translateY(16px);opacity:0;transition:transform .25s,opacity .25s;
+  pointer-events:none;max-width:320px;
+}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.toast-ok{border-color:rgba(0,229,154,.35);color:var(--green)}
+#toast.toast-err{border-color:rgba(255,64,96,.35);color:var(--red)}
+
+/* ─── SCROLLBAR ──────────────────────────────────────────── */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--muted);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--dim)}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────── */
+@media(max-width:960px){
+  :root{--sidebar-w:190px}
+  .stats-bar{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .sidebar{display:none}
+  .content{padding:20px 16px}
+  .topbar{padding:14px 16px}
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .search-input{width:160px}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── PASSWORD GATE ─────────────────────────────────── -->
+<div id="gate">
+  <div class="gate-inner" id="gate-box">
+    <div class="gate-logo">
+      <span>DealerPost AI</span>
+      Admin Portal
+    </div>
+    <div class="gate-title">Enter Password</div>
+    <input
+      class="gate-field"
+      id="gate-pw"
+      type="password"
+      placeholder="password"
+      autocomplete="current-password"
+      spellcheck="false"
+    >
+    <div class="gate-error" id="gate-err"></div>
+    <button class="gate-btn" id="gate-btn">Enter Dashboard</button>
+  </div>
+</div>
+
+<!-- ─── APP ──────────────────────────────────────────── -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">
+        <strong>DealerPost AI</strong>
+        Admin Console
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showSection('overview',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </div>
+      <div class="nav-item" onclick="showSection('leads',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Discount Leads
+      </div>
+      <div class="nav-item" onclick="showSection('newsletters',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Newsletter Sends
+      </div>
+      <div class="nav-item" onclick="showSection('send',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send Newsletter
+      </div>
+    </nav>
+    <div class="sidebar-footer">v1.0 &middot; DPAI</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <span class="topbar-title">DEALERPOST AI &mdash; ADMIN</span>
+      <div class="topbar-right">
+        <div class="status-dot"></div>
+        <span class="status-label">Live</span>
+        <button class="btn-ghost" onclick="logout()">Log Out</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- STATS BAR -->
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-label">Total Leads</div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-sub">Discount sign-ups</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Subscribers</div>
+          <div class="stat-value v-active" id="stat-active">—</div>
+          <div class="stat-sub">opted_out = false / null</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Opted Out</div>
+          <div class="stat-value v-opted" id="stat-opted">—</div>
+          <div class="stat-sub">Unsubscribed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Newsletters Sent</div>
+          <div class="stat-value v-amber" id="stat-nl">—</div>
+          <div class="stat-sub">Total sends logged</div>
+        </div>
+      </div>
+
+      <!-- SECTION: OVERVIEW -->
+      <div id="sec-overview">
+        <div class="section-card">
+          <div class="section-head">
+            <span class="section-title">Recent Leads (last 10)</span>
+            <button class="btn-icon" onclick="loadAll()">
+              <svg id="refresh-icon-ov" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Name</th><th>Email</th><th>Dealership</th><th>Promo Code</th><th>Claimed Date</th><th>Status</th></tr>
+              </thead>
+              <tbody id="tbl-overview-body">
+                <tr class="loading-row"><td colspan="6">Loading&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: LEADS -->
+      <div id="sec-leads" style="display:none">
+        <div class="section-card">
+          <div class="section-head">
+            <span class="section-title">Discount Leads</span>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <input class="search-input" type="text" id="leads-search" placeholder="Search name, email, dealership..." oninput="filterLeads()">
+              <button class="btn-icon" onclick="loadLeads(true)">
+                <svg id="refresh-icon-leads" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                Refresh
+              </button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Name</th><th>Email</th><th>Dealership</th><th>Promo Code</th><th>Claimed Date</th><th>Status</th></tr>
+              </thead>
+              <tbody id="tbl-leads-body">
+                <tr class="loading-row"><td colspan="6">Loading&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer" id="leads-count"></div>
+        </div>
+      </div>
+
+      <!-- SECTION: NEWSLETTERS -->
+      <div id="sec-newsletters" style="display:none">
+        <div class="section-card">
+          <div class="section-head">
+            <span class="section-title">Newsletter Sends (last 50)</span>
+            <button class="btn-icon" onclick="loadNewsletters(true)">
+              <svg id="refresh-icon-nl" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Recipient</th><th>Issue #</th><th>Subject</th><th>Sent Date</th></tr>
+              </thead>
+              <tbody id="tbl-nl-body">
+                <tr class="loading-row"><td colspan="4">Loading&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: SEND NEWSLETTER -->
+      <div id="sec-send" style="display:none">
+        <div class="section-card">
+          <div class="section-head">
+            <span class="section-title">Send Newsletter</span>
+          </div>
+          <div class="form-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Issue Number</label>
+                <input class="form-input" type="number" id="nl-issue" placeholder="e.g. 7" min="1">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Preview To (optional)</label>
+                <input class="form-input" type="email" id="nl-preview-email" placeholder="you@dealerpostai.com">
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Subject Line</label>
+                <input class="form-input" type="text" id="nl-subject" placeholder="e.g. DealerPost AI — Issue #7: Top 5 Scripts">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn-primary" id="nl-send-btn" onclick="sendNewsletter()">Send Preview</button>
+              <button class="btn-outline" onclick="clearNlForm()">Clear</button>
+              <span id="nl-sending" style="display:none;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px">Sending&hellip;</span>
+            </div>
+            <div class="response-box" id="nl-response"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<div id="toast"></div>
+
+<script>
+/* ─── CONFIG ──────────────────────────────────────────────────────── */
+const SUPABASE_URL     = 'https://nzsabhwodjlkumzlmmxf.supabase.co';
+const SUPABASE_KEY     = 'sb_publishable__VZ9X2mpVhvpxx7XB_QqXA_RrtWBGYu';
+const NEWSLETTER_SECRET = 'SENDIT';
+const ADMIN_PASSWORD   = 'DPAI2026';
+const SESSION_KEY      = 'dpai_admin_auth';
+
+/* ─── GATE ────────────────────────────────────────────────────────── */
+const gate    = document.getElementById('gate');
+const app     = document.getElementById('app');
+const gatePw  = document.getElementById('gate-pw');
+const gateBtn = document.getElementById('gate-btn');
+const gateErr = document.getElementById('gate-err');
+const gateBox = document.getElementById('gate-box');
+
+function checkSession(){
+  if(sessionStorage.getItem(SESSION_KEY)==='1'){
+    gate.classList.add('hidden');
+    app.classList.add('visible');
+    loadAll();
+  }
+}
+
+function attemptLogin(){
+  if(gatePw.value===ADMIN_PASSWORD){
+    sessionStorage.setItem(SESSION_KEY,'1');
+    gate.classList.add('hidden');
+    app.classList.add('visible');
+    loadAll();
+  } else {
+    gateErr.textContent='Incorrect password.';
+    gateBox.classList.remove('shake');
+    void gateBox.offsetWidth;
+    gateBox.classList.add('shake');
+    gatePw.value='';
+    gatePw.focus();
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem(SESSION_KEY);
+  gate.classList.remove('hidden');
+  app.classList.remove('visible');
+  gatePw.value='';
+  gateErr.textContent='';
+}
+
+gateBtn.addEventListener('click', attemptLogin);
+gatePw.addEventListener('keydown', e=>{ if(e.key==='Enter') attemptLogin(); });
+
+/* ─── NAVIGATION ──────────────────────────────────────────────────── */
+const ALL_SECTIONS = ['overview','leads','newsletters','send'];
+
+function showSection(id, el){
+  ALL_SECTIONS.forEach(s=>{
+    document.getElementById('sec-'+s).style.display = s===id ? 'block' : 'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(id==='leads')       loadLeads();
+  if(id==='newsletters') loadNewsletters();
+}
+
+/* ─── SUPABASE FETCH ──────────────────────────────────────────────── */
+async function sbFetch(path){
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+    headers:{
+      'apikey':        SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Accept':        'application/json',
+      'Prefer':        'count=exact',
+    }
+  });
+  if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  const data = await res.json();
+  return data;
+}
+
+/* ─── TOAST ───────────────────────────────────────────────────────── */
+let toastTimer = null;
+function showToast(msg, type='ok'){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `show toast-${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ t.className=''; }, 3200);
+}
+
+/* ─── DATE FORMAT ─────────────────────────────────────────────────── */
+function fmtDate(str){
+  if(!str) return '—';
+  const d = new Date(str);
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})
+    +' '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+}
+
+/* ─── ESCAPE HTML ─────────────────────────────────────────────────── */
+function esc(str){
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* ─── SPIN HELPERS ────────────────────────────────────────────────── */
+function spinIcon(id){ const el=document.getElementById(id); if(el) el.classList.add('spinning'); }
+function stopSpin(id){ const el=document.getElementById(id); if(el) el.classList.remove('spinning'); }
+
+/* ─── LEADS ───────────────────────────────────────────────────────── */
+let leadsData   = [];
+let leadsLoaded = false;
+
+function renderLeadsRows(data, tbodyId){
+  const tbody = document.getElementById(tbodyId);
+  if(!data || !data.length){
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">No records found.</div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map(r => `
+    <tr class="${r.opted_out ? 'opted-out' : ''}">
+      <td>${esc(r.name || r.full_name || '—')}</td>
+      <td class="mono">${esc(r.email || '—')}</td>
+      <td>${esc(r.dealership || r.dealer_name || '—')}</td>
+      <td class="mono">${esc(r.promo_code || r.discount_code || r.code || '—')}</td>
+      <td class="mono" style="white-space:nowrap">${fmtDate(r.created_at || r.claimed_at)}</td>
+      <td>${r.opted_out
+        ? '<span class="badge badge-opted">Opted Out</span>'
+        : '<span class="badge badge-active">Active</span>'}</td>
+    </tr>`).join('');
+}
+
+async function loadLeads(force=false){
+  if(leadsLoaded && !force) return;
+  spinIcon('refresh-icon-leads');
+  document.getElementById('tbl-leads-body').innerHTML =
+    `<tr class="loading-row"><td colspan="6">Loading&hellip;</td></tr>`;
+  try{
+    const data = await sbFetch('discount_leads?select=*&order=created_at.desc');
+    leadsData   = data || [];
+    leadsLoaded = true;
+    renderLeadsRows(leadsData, 'tbl-leads-body');
+    document.getElementById('leads-count').textContent = `${leadsData.length} total records`;
+    renderLeadsRows(leadsData.slice(0,10), 'tbl-overview-body');
+    // Update stats from full data
+    updateLeadStats(leadsData);
+  } catch(e){
+    document.getElementById('tbl-leads-body').innerHTML =
+      `<tr><td colspan="6" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px">Error: ${esc(e.message)}</td></tr>`;
+    showToast('Failed to load leads', 'err');
+  }
+  stopSpin('refresh-icon-leads');
+}
+
+function filterLeads(){
+  const q = document.getElementById('leads-search').value.toLowerCase().trim();
+  if(!q){ renderLeadsRows(leadsData,'tbl-leads-body'); document.getElementById('leads-count').textContent=`${leadsData.length} total records`; return; }
+  const filtered = leadsData.filter(r=>
+    (r.name||r.full_name||'').toLowerCase().includes(q) ||
+    (r.email||'').toLowerCase().includes(q) ||
+    (r.dealership||r.dealer_name||'').toLowerCase().includes(q) ||
+    (r.promo_code||r.discount_code||r.code||'').toLowerCase().includes(q)
+  );
+  renderLeadsRows(filtered, 'tbl-leads-body');
+  document.getElementById('leads-count').textContent = `Showing ${filtered.length} of ${leadsData.length} records`;
+}
+
+function updateLeadStats(data){
+  const total  = data.length;
+  const opted  = data.filter(r=>r.opted_out===true).length;
+  const active = total - opted;
+  document.getElementById('stat-total').textContent  = total;
+  document.getElementById('stat-active').textContent = active;
+  document.getElementById('stat-opted').textContent  = opted;
+}
+
+/* ─── NEWSLETTER SENDS ────────────────────────────────────────────── */
+let nlLoaded = false;
+
+async function loadNewsletters(force=false){
+  if(nlLoaded && !force) return;
+  spinIcon('refresh-icon-nl');
+  document.getElementById('tbl-nl-body').innerHTML =
+    `<tr class="loading-row"><td colspan="4">Loading&hellip;</td></tr>`;
+  try{
+    const data = await sbFetch('newsletter_sends?select=*&order=sent_at.desc&limit=50');
+    nlLoaded = true;
+    document.getElementById('stat-nl').textContent = data.length;
+    if(!data.length){
+      document.getElementById('tbl-nl-body').innerHTML =
+        `<tr><td colspan="4"><div class="empty-state">No newsletter sends logged yet.</div></td></tr>`;
+    } else {
+      document.getElementById('tbl-nl-body').innerHTML = data.map(r=>`
+        <tr>
+          <td class="mono">${esc(r.recipient||r.email||'—')}</td>
+          <td class="mono" style="text-align:center">${esc(String(r.issue_number||r.issue||'—'))}</td>
+          <td>${esc(r.subject||'—')}</td>
+          <td class="mono" style="white-space:nowrap">${fmtDate(r.sent_at||r.created_at)}</td>
+        </tr>`).join('');
+    }
+  } catch(e){
+    document.getElementById('tbl-nl-body').innerHTML =
+      `<tr><td colspan="4" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px">Error: ${esc(e.message)}</td></tr>`;
+    showToast('Failed to load newsletter sends', 'err');
+  }
+  stopSpin('refresh-icon-nl');
+}
+
+/* ─── SEND NEWSLETTER ─────────────────────────────────────────────── */
+async function sendNewsletter(){
+  const issue   = document.getElementById('nl-issue').value.trim();
+  const subject = document.getElementById('nl-subject').value.trim();
+  const preview = document.getElementById('nl-preview-email').value.trim();
+  const btn     = document.getElementById('nl-send-btn');
+  const spinner = document.getElementById('nl-sending');
+  const resBox  = document.getElementById('nl-response');
+
+  if(!issue || !subject){
+    showToast('Issue # and Subject are required', 'err');
+    return;
+  }
+
+  btn.disabled        = true;
+  spinner.style.display = 'inline';
+  resBox.className    = 'response-box';
+
+  const payload = { issue_number: parseInt(issue, 10), subject };
+  if(preview) payload.preview_to = preview;
+
+  try{
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/send-newsletter`, {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${NEWSLETTER_SECRET}`,
+      },
+      body: JSON.stringify(payload),
+    });
+    const text = await res.text();
+    let pretty = text;
+    try{ pretty = JSON.stringify(JSON.parse(text), null, 2); } catch(e){}
+    resBox.textContent = `HTTP ${res.status}\n\n${pretty}`;
+    resBox.className   = `response-box vis ${res.ok ? 'ok' : 'err'}`;
+    showToast(res.ok ? 'Newsletter send triggered!' : 'Server returned an error', res.ok ? 'ok' : 'err');
+  } catch(e){
+    resBox.textContent = `Network error: ${e.message}`;
+    resBox.className   = 'response-box vis err';
+    showToast('Network error', 'err');
+  }
+
+  btn.disabled          = false;
+  spinner.style.display = 'none';
+}
+
+function clearNlForm(){
+  ['nl-issue','nl-subject','nl-preview-email'].forEach(id=>{ document.getElementById(id).value=''; });
+  const rb = document.getElementById('nl-response');
+  rb.className = 'response-box'; rb.textContent = '';
+}
+
+/* ─── LOAD ALL ────────────────────────────────────────────────────── */
+async function loadAll(){
+  spinIcon('refresh-icon-ov');
+  try{
+    // Load overview + stats from a single full leads fetch
+    const data = await sbFetch('discount_leads?select=*&order=created_at.desc');
+    leadsData   = data || [];
+    leadsLoaded = true;
+    updateLeadStats(leadsData);
+    renderLeadsRows(leadsData.slice(0,10), 'tbl-overview-body');
+    document.getElementById('leads-count').textContent = `${leadsData.length} total records`;
+  } catch(e){
+    document.getElementById('tbl-overview-body').innerHTML =
+      `<tr><td colspan="6" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px">Error loading data.</td></tr>`;
+    ['stat-total','stat-active','stat-opted'].forEach(id=>{
+      document.getElementById(id).textContent = 'Err';
+    });
+  }
+  stopSpin('refresh-icon-ov');
+
+  // Also fetch newsletter count separately
+  try{
+    const nlData = await sbFetch('newsletter_sends?select=id');
+    document.getElementById('stat-nl').textContent = (nlData||[]).length;
+  } catch(e){
+    document.getElementById('stat-nl').textContent = 'Err';
+  }
+}
+
+/* ─── INIT ────────────────────────────────────────────────────────── */
+checkSession();
+</script>
+</body>
+</html>
