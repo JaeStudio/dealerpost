@@ -459,6 +459,34 @@ img[src*="unsplash"]{background:var(--card)}
   /* Doc pages */
   .doc-wrap{padding:100px 20px 60px}
 }
+
+/* ══ STATS BAR ══ */
+.stats-bar{position:relative;z-index:2;background:var(--card);border-top:1px solid var(--b);border-bottom:1px solid var(--b)}
+.stats-bar-inner{display:flex;align-items:stretch;justify-content:center;max-width:900px;margin:0 auto;padding:0}
+.stat-block{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px 24px;text-align:center}
+.stat-block + .stat-block{border-left:1px solid rgba(200,146,42,.18)}
+.stat-number{font-family:'Syncopate',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:10px}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--dim)}
+@media(max-width:600px){.stats-bar-inner{flex-direction:column}.stat-block+.stat-block{border-left:none;border-top:1px solid rgba(200,146,42,.18)}}
+
+/* ══ FLOATING GOLD PARTICLES ══ */
+.gold-particle{position:fixed;border-radius:50%;pointer-events:none;z-index:1;background:var(--gold2)}
+@keyframes float-up{0%{transform:translateY(0) scale(1);opacity:0}15%{opacity:var(--p-op)}85%{opacity:var(--p-op)}100%{transform:translateY(-120vh) scale(0.6);opacity:0}}
+.gp1{width:3px;height:3px;left:8%;bottom:-10%;--p-op:.35;animation:float-up 14s ease-in-out 0s infinite}
+.gp2{width:4px;height:4px;left:22%;bottom:-10%;--p-op:.25;animation:float-up 18s ease-in-out 2.5s infinite}
+.gp3{width:3px;height:3px;left:41%;bottom:-10%;--p-op:.40;animation:float-up 16s ease-in-out 5s infinite}
+.gp4{width:4px;height:4px;left:58%;bottom:-10%;--p-op:.28;animation:float-up 20s ease-in-out 1.5s infinite}
+.gp5{width:3px;height:3px;left:72%;bottom:-10%;--p-op:.32;animation:float-up 15s ease-in-out 7s infinite}
+.gp6{width:4px;height:4px;left:87%;bottom:-10%;--p-op:.22;animation:float-up 19s ease-in-out 3.8s infinite}
+.gp7{width:3px;height:3px;left:33%;bottom:-10%;--p-op:.30;animation:float-up 17s ease-in-out 9s infinite}
+.gp8{width:3px;height:3px;left:65%;bottom:-10%;--p-op:.35;animation:float-up 13s ease-in-out 6.2s infinite}
+
+/* ══ SECTION DIVIDER (standalone) ══ */
+.section-divider{position:relative;z-index:2;height:1px;margin:0 64px;background:linear-gradient(90deg,transparent,rgba(200,146,42,.18),rgba(200,146,42,.38),rgba(200,146,42,.18),transparent)}
+@media(max-width:768px){.section-divider{margin:0 20px}}
+
+/* ══ FOOTER GOLD TOP BORDER ══ */
+.footer-gold-border{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(200,146,42,.12) 20%,rgba(240,200,74,.45) 50%,rgba(200,146,42,.12) 80%,transparent 100%)}
 </style>
 </head>
 <body>
@@ -468,6 +496,16 @@ img[src*="unsplash"]{background:var(--card)}
 <div class="bg-grid"></div>
 <div class="bg-noise"></div>
 <div class="bg-vig"></div>
+
+<!-- ══ FLOATING GOLD PARTICLES ══ -->
+<div class="gold-particle gp1"></div>
+<div class="gold-particle gp2"></div>
+<div class="gold-particle gp3"></div>
+<div class="gold-particle gp4"></div>
+<div class="gold-particle gp5"></div>
+<div class="gold-particle gp6"></div>
+<div class="gold-particle gp7"></div>
+<div class="gold-particle gp8"></div>
 
 <!-- NAV -->
 <nav id="nav">
@@ -536,6 +574,24 @@ img[src*="unsplash"]{background:var(--card)}
     <div class="ticker-item"><span class="td"></span>45 seconds <span>per car posted</span></div>
     <div class="ticker-item"><span class="td"></span>Bulk queue · <span>full automation</span></div>
     <div class="ticker-item"><span class="td"></span>Built-in <span>deal tracker & CRM</span></div>
+  </div>
+</div>
+
+<!-- ══ STATS BAR ══ -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stat-block reveal">
+      <div class="stat-number">10,000+</div>
+      <div class="stat-label">Captions Generated</div>
+    </div>
+    <div class="stat-block reveal d1">
+      <div class="stat-number">&lt; 30 sec</div>
+      <div class="stat-label">Per Caption</div>
+    </div>
+    <div class="stat-block reveal d2">
+      <div class="stat-number">100%</div>
+      <div class="stat-label">Dealership Focused</div>
+    </div>
   </div>
 </div>
 
@@ -923,7 +979,11 @@ if(cs)crawlObs.observe(cs);
 </script>
 
 <!-- ══ FOOTER ══ -->
+<!-- ══ PRE-FOOTER SECTION DIVIDER ══ -->
+<div class="section-divider"></div>
+
 <footer id="footer" style="position:relative;z-index:2;padding:80px 64px 0" class="site-footer">
+<div class="footer-gold-border"></div>
 
   <div style="max-width:1200px;margin:0 auto">
     <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(200,146,42,.25),rgba(200,146,42,.5),rgba(200,146,42,.25),transparent);margin-bottom:72px"></div>
