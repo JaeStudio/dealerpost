@@ -1,0 +1,33 @@
+name: Weekly Newsletter
+
+on:
+  schedule:
+    # Every Monday at 9:00 AM ET (14:00 UTC)
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+    # Also allows manual trigger from GitHub Actions tab
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Weekly Newsletter
+        run: |
+          RESPONSE=$(curl -s -w "\n%{http_code}" -X POST \
+            https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/send-newsletter \
+            -H "Authorization: Bearer ${{ secrets.NEWSLETTER_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{}')
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+
+          echo "Response: $BODY"
+          echo "HTTP Status: $HTTP_CODE"
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Newsletter send FAILED with status $HTTP_CODE"
+            exit 1
+          fi
+
+          echo "Newsletter sent successfully!"

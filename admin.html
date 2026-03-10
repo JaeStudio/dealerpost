@@ -82,6 +82,29 @@ body{overflow-x:hidden}
 .gate-field:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(200,146,42,.15)}
 .gate-field::placeholder{letter-spacing:1px;font-size:12px;color:var(--dim)}
 
+.gate-api-wrap{width:100%;display:flex;flex-direction:column;gap:6px}
+.gate-api-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--dim);text-align:left;
+}
+.gate-api-field{
+  width:100%;
+  background:var(--surf);
+  border:1px solid var(--border-mid);
+  border-radius:8px;padding:11px 14px;
+  color:var(--text);
+  font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.5px;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.gate-api-field:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(200,146,42,.15)}
+.gate-api-field::placeholder{letter-spacing:0px;font-size:11px;color:var(--dim)}
+.gate-api-note{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;color:var(--dim);letter-spacing:0.5px;line-height:1.5;
+}
+
 .gate-btn{
   width:100%;
   background:linear-gradient(135deg,var(--amber),var(--gold));
@@ -391,6 +414,18 @@ tbody tr.opted-out td{color:var(--dim)}
       autocomplete="current-password"
       spellcheck="false"
     >
+    <div class="gate-api-wrap">
+      <label class="gate-api-label" for="gate-api-key">Supabase API Key <span style="color:var(--amber)">(optional)</span></label>
+      <input
+        class="gate-api-field"
+        id="gate-api-key"
+        type="password"
+        placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+        autocomplete="off"
+        spellcheck="false"
+      >
+      <span class="gate-api-note">Find in: Supabase Dashboard &rarr; Settings &rarr; API &rarr; <em>anon public</em></span>
+    </div>
     <div class="gate-error" id="gate-err"></div>
     <button class="gate-btn" id="gate-btn">Enter Dashboard</button>
   </div>
@@ -577,11 +612,17 @@ tbody tr.opted-out td{color:var(--dim)}
 
 <script>
 /* ─── CONFIG ──────────────────────────────────────────────────────── */
-const SUPABASE_URL     = 'https://nzsabhwodjlkumzlmmxf.supabase.co';
-const SUPABASE_KEY     = 'sb_publishable__VZ9X2mpVhvpxx7XB_QqXA_RrtWBGYu';
-const NEWSLETTER_SECRET = 'SENDIT';
-const ADMIN_PASSWORD   = 'DPAI2026';
-const SESSION_KEY      = 'dpai_admin_auth';
+const SUPABASE_URL          = 'https://nzsabhwodjlkumzlmmxf.supabase.co';
+const SUPABASE_KEY_DEFAULT  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56c2FiaHdvZGpsa3VtemxtbXhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwMDM4NDIsImV4cCI6MjA4ODU3OTg0Mn0.1ys4kKNGrJReZPFYt42jv9cWMW0WZwceQMbYugVq9yA';
+const NEWSLETTER_SECRET     = 'SENDIT';
+const ADMIN_PASSWORD        = 'DPAI1994';
+const SESSION_KEY           = 'dpai_admin_auth';
+const SESSION_API_KEY       = 'dpai_admin_apikey';
+
+/* Returns the user-supplied anon key if set, else the hardcoded default */
+function getApiKey(){
+  return sessionStorage.getItem(SESSION_API_KEY) || SUPABASE_KEY_DEFAULT;
+}
 
 /* ─── GATE ────────────────────────────────────────────────────────── */
 const gate    = document.getElementById('gate');
@@ -600,8 +641,16 @@ function checkSession(){
 }
 
 function attemptLogin(){
+  const apiKeyInput = document.getElementById('gate-api-key');
   if(gatePw.value===ADMIN_PASSWORD){
     sessionStorage.setItem(SESSION_KEY,'1');
+    // Save the user-supplied API key if provided; clear it if empty (will fall back to default)
+    const userKey = (apiKeyInput ? apiKeyInput.value.trim() : '');
+    if(userKey){
+      sessionStorage.setItem(SESSION_API_KEY, userKey);
+    } else {
+      sessionStorage.removeItem(SESSION_API_KEY);
+    }
     gate.classList.add('hidden');
     app.classList.add('visible');
     loadAll();
@@ -617,9 +666,12 @@ function attemptLogin(){
 
 function logout(){
   sessionStorage.removeItem(SESSION_KEY);
+  sessionStorage.removeItem(SESSION_API_KEY);
   gate.classList.remove('hidden');
   app.classList.remove('visible');
   gatePw.value='';
+  const apiKeyInput = document.getElementById('gate-api-key');
+  if(apiKeyInput) apiKeyInput.value='';
   gateErr.textContent='';
 }
 
@@ -641,15 +693,26 @@ function showSection(id, el){
 
 /* ─── SUPABASE FETCH ──────────────────────────────────────────────── */
 async function sbFetch(path){
+  const key = getApiKey();
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
     headers:{
-      'apikey':        SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'apikey':        key,
+      'Authorization': `Bearer ${key}`,
       'Accept':        'application/json',
-      'Prefer':        'count=exact',
     }
   });
-  if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  if(!res.ok){
+    const body = await res.text();
+    let hint = '';
+    if(res.status===401){
+      hint = '\n\nHint: The API key may be invalid or expired. Paste your Supabase anon key in the login screen.';
+    } else if(res.status===403){
+      hint = '\n\nHint: Row Level Security may be blocking this request. Check your Supabase RLS policies.';
+    } else if(res.status===404){
+      hint = '\n\nHint: Table or endpoint not found. Verify the table name in Supabase.';
+    }
+    throw new Error(`HTTP ${res.status} — ${body}${hint}`);
+  }
   const data = await res.json();
   return data;
 }
@@ -700,7 +763,7 @@ function renderLeadsRows(data, tbodyId){
       <td>${esc(r.name || r.full_name || '—')}</td>
       <td class="mono">${esc(r.email || '—')}</td>
       <td>${esc(r.dealership || r.dealer_name || '—')}</td>
-      <td class="mono">${esc(r.promo_code || r.discount_code || r.code || '—')}</td>
+      <td class="mono">${esc(r.stripe_promo_code || r.promo_code || r.discount_code || r.code || '—')}</td>
       <td class="mono" style="white-space:nowrap">${fmtDate(r.created_at || r.claimed_at)}</td>
       <td>${r.opted_out
         ? '<span class="badge badge-opted">Opted Out</span>'
@@ -737,7 +800,7 @@ function filterLeads(){
     (r.name||r.full_name||'').toLowerCase().includes(q) ||
     (r.email||'').toLowerCase().includes(q) ||
     (r.dealership||r.dealer_name||'').toLowerCase().includes(q) ||
-    (r.promo_code||r.discount_code||r.code||'').toLowerCase().includes(q)
+    (r.stripe_promo_code||r.promo_code||r.discount_code||r.code||'').toLowerCase().includes(q)
   );
   renderLeadsRows(filtered, 'tbl-leads-body');
   document.getElementById('leads-count').textContent = `Showing ${filtered.length} of ${leadsData.length} records`;
@@ -849,10 +912,11 @@ async function loadAll(){
     document.getElementById('leads-count').textContent = `${leadsData.length} total records`;
   } catch(e){
     document.getElementById('tbl-overview-body').innerHTML =
-      `<tr><td colspan="6" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px">Error loading data.</td></tr>`;
+      `<tr><td colspan="6" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px;white-space:pre-wrap;word-break:break-all">Error loading data:\n${esc(e.message)}</td></tr>`;
     ['stat-total','stat-active','stat-opted'].forEach(id=>{
       document.getElementById(id).textContent = 'Err';
     });
+    showToast('Failed to load — check API key', 'err');
   }
   stopSpin('refresh-icon-ov');
 

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  DealerPost AI — Enhanced Logo SVG
+  Design: CPU chip with checkered pixel border, bold "DP" center text
+  Colors: Deep dark background, animated gold gradient checker, gold glow text
+  viewBox: 0 0 200 200 (square)
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  xmlns:xlink="http://www.w3.org/1999/xlink"
+  viewBox="0 0 200 200"
+  width="200"
+  height="200"
+  role="img"
+  aria-label="DealerPost AI logo"
+>
+  <!-- ============================================================
+       DEFINITIONS: gradients, patterns, filters
+       ============================================================ -->
+  <defs>
+
+    <!-- Gold gradient for checker squares (horizontal sweep) -->
+    <linearGradient id="goldGrad" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#f0c84a"/>
+      <stop offset="33%"  stop-color="#e8a030"/>
+      <stop offset="66%"  stop-color="#c8922a"/>
+      <stop offset="100%" stop-color="#f0c84a"/>
+      <!-- Animated gold cycling -->
+      <animate
+        attributeName="x1"
+        values="0;200;0"
+        dur="3s"
+        repeatCount="indefinite"
+        calcMode="linear"
+      />
+      <animate
+        attributeName="x2"
+        values="200;400;200"
+        dur="3s"
+        repeatCount="indefinite"
+        calcMode="linear"
+      />
+    </linearGradient>
+
+    <!-- Chip interior gradient: deep dark, subtle blue-black -->
+    <linearGradient id="chipBg" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#0d0d1e"/>
+      <stop offset="100%" stop-color="#02020a"/>
+    </linearGradient>
+
+    <!-- Outer glow filter: gold drop-shadow on entire chip -->
+    <filter id="chipGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feColorMatrix
+        in="blur"
+        type="matrix"
+        values="1 0.7 0 0 0
+                0 0.5 0 0 0
+                0 0   0 0 0
+                0 0   0 1 0"
+        result="goldBlur"
+      />
+      <feMerge>
+        <feMergeNode in="goldBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Gold glow filter for "DP" text -->
+    <filter id="textGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <!-- Outer soft glow -->
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="outerBlur"/>
+      <feColorMatrix
+        in="outerBlur"
+        type="matrix"
+        values="1 0.78 0 0 0.05
+                0 0.6  0 0 0
+                0 0    0 0 0
+                0 0    0 0.9 0"
+        result="outerGold"
+      />
+      <!-- Inner tight glow -->
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="innerBlur"/>
+      <feMerge>
+        <feMergeNode in="outerGold"/>
+        <feMergeNode in="innerBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shine sweep gradient: diagonal white highlight -->
+    <linearGradient id="shineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="white" stop-opacity="0"/>
+      <stop offset="45%"  stop-color="white" stop-opacity="0"/>
+      <stop offset="50%"  stop-color="white" stop-opacity="0.18"/>
+      <stop offset="55%"  stop-color="white" stop-opacity="0"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+
+    <!--
+      Checker pattern: 10x10 unit cells, alternating filled/empty
+      Applied to the 20px border ring around the chip.
+      Each cell is 10x10px. The "filled" square is (0,0)→(10,10) top-left,
+      and (10,10)→(20,20) bottom-right of a 20x20 tile for the alternating look.
+    -->
+    <pattern id="checkerPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+      <!-- top-left filled square -->
+      <rect x="0"  y="0"  width="10" height="10" fill="url(#goldGrad)"/>
+      <!-- bottom-right filled square -->
+      <rect x="10" y="10" width="10" height="10" fill="url(#goldGrad)"/>
+      <!-- top-right and bottom-left remain transparent (dark background shows through) -->
+    </pattern>
+
+    <!-- Clip path: square chip border ring only (outer square minus inner square) -->
+    <!-- Used to restrict checker pattern to border ring -->
+    <clipPath id="borderRingClip">
+      <!-- Full chip area -->
+      <rect x="10" y="10" width="180" height="180" rx="6" ry="6"/>
+    </clipPath>
+
+    <!-- Clip path for inner chip face (excludes border ring) -->
+    <clipPath id="innerChipClip">
+      <rect x="30" y="30" width="140" height="140"/>
+    </clipPath>
+
+  </defs>
+
+  <!-- ============================================================
+       LAYER 1: Outer ambient background (very subtle, behind chip)
+       ============================================================ -->
+  <rect x="0" y="0" width="200" height="200" fill="#02020a"/>
+
+  <!-- ============================================================
+       LAYER 2: Full chip body with outer glow applied
+       ============================================================ -->
+  <g filter="url(#chipGlow)">
+
+    <!-- Chip outer border background (dark base under checker) -->
+    <rect x="10" y="10" width="180" height="180" rx="6" ry="6" fill="#02020a"/>
+
+    <!-- Checker pattern border ring
+         Strategy: paint checker over the full chip area,
+         then paint the dark interior on top to mask out the center.
+         This gives a precise pixel-checker border exactly 20px wide. -->
+    <rect x="10" y="10" width="180" height="180" rx="6" ry="6" fill="url(#checkerPattern)"/>
+
+    <!-- Inner chip face: dark background covering center, leaving 20px checker border -->
+    <rect x="30" y="30" width="140" height="140" fill="url(#chipBg)"/>
+
+    <!-- Inner chip face: thin gold inset border line for definition -->
+    <rect
+      x="30" y="30" width="140" height="140"
+      fill="none"
+      stroke="url(#goldGrad)"
+      stroke-width="1.5"
+      opacity="0.6"
+    />
+
+  </g>
+
+  <!-- ============================================================
+       LAYER 3: "DP" text — gold with glow filter
+       ============================================================ -->
+  <text
+    x="100"
+    y="124"
+    font-family="'Arial Black', 'Impact', 'Helvetica Neue', Arial, sans-serif"
+    font-size="72"
+    font-weight="900"
+    text-anchor="middle"
+    fill="#f0c84a"
+    filter="url(#textGlow)"
+    letter-spacing="-2"
+  >DP</text>
+
+  <!-- ============================================================
+       LAYER 4: Diagonal shine sweep animation
+       Covers only the inner chip face (30,30 → 170,170)
+       Sweeps from left to right every 4 seconds
+       ============================================================ -->
+  <g clip-path="url(#innerChipClip)">
+    <rect
+      x="-170" y="30"
+      width="340" height="140"
+      fill="url(#shineGrad)"
+      opacity="1"
+    >
+      <!-- Sweep: translate X from -340 (fully left/offscreen) to +340 (fully right) -->
+      <animateTransform
+        attributeName="transform"
+        type="translate"
+        values="-170,0; 340,0; 340,0"
+        keyTimes="0; 0.35; 1"
+        dur="4s"
+        repeatCount="indefinite"
+        calcMode="spline"
+        keySplines="0.4 0 0.6 1; 0 0 1 1"
+      />
+    </rect>
+  </g>
+
+  <!-- ============================================================
+       LAYER 5: Corner accent dots — small gold squares at chip corners
+       Reinforces the CPU/chip aesthetic
+       ============================================================ -->
+  <!-- Top-left corner accent -->
+  <rect x="12" y="12" width="6" height="6" fill="#f0c84a" opacity="0.9"/>
+  <!-- Top-right corner accent -->
+  <rect x="182" y="12" width="6" height="6" fill="#f0c84a" opacity="0.9"/>
+  <!-- Bottom-left corner accent -->
+  <rect x="12" y="182" width="6" height="6" fill="#f0c84a" opacity="0.9"/>
+  <!-- Bottom-right corner accent -->
+  <rect x="182" y="182" width="6" height="6" fill="#f0c84a" opacity="0.9"/>
+
+</svg>

@@ -195,7 +195,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:140px
 <!-- NAV -->
 <nav id="nav">
   <a class="nav-brand" href="index.html">
-    <img class="nav-logo-img" src="logo.svg" alt="DealerPost AI">
+    <img class="nav-logo-img" src="logo-new.svg" alt="DealerPost AI">
     <span class="nav-wordmark">DEALER<em>POST</em></span>
     <span class="nav-v">AI</span>
   </a>
@@ -265,7 +265,7 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:140px
       <!-- Brand -->
       <div>
         <a href="index.html" style="display:inline-flex;align-items:center;gap:12px;text-decoration:none;margin-bottom:18px">
-          <img src="logo.svg" alt="DealerPost AI" style="height:32px;width:auto;object-fit:contain;filter:drop-shadow(0 0 8px rgba(200,146,42,.35))">
+          <img src="logo-new.svg" alt="DealerPost AI" style="height:32px;width:auto;object-fit:contain;filter:drop-shadow(0 0 8px rgba(200,146,42,.35))">
           <span style="font-family:'Syncopate',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.7)">DEALER<span style="background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">POST</span></span>
         </a>
         <p style="font-size:13px;font-weight:300;color:rgba(238,238,248,.38);line-height:1.85;max-width:280px">AI-powered tools for automotive dealerships. Generate captions, qualify leads, and close deals faster.</p>
@@ -292,6 +292,16 @@ main{flex:1;display:flex;align-items:center;justify-content:center;padding:140px
       <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:2px">&copy; 2025 DEALERPOST AI &mdash; ALL RIGHTS RESERVED</span>
       <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(90,90,128,.45);letter-spacing:1px">dealerpostai.com</span>
     </div>
+  </div>
+
+  <!-- Newsletter signup row -->
+  <div style="text-align:center;padding:18px 0 10px;border-top:1px solid rgba(200,146,42,.15);margin-top:16px">
+    <p style="font-size:10px;letter-spacing:2.5px;color:#5a5a80;text-transform:uppercase;margin-bottom:10px;font-family:monospace">Get The DealerPost Dispatch</p>
+    <form id="footer-nl-form" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap" onsubmit="footerNLSubmit(event)">
+      <input type="email" id="footer-nl-email" placeholder="your@email.com" required style="background:#0d0d1e;border:1px solid rgba(200,146,42,.3);color:#eeeef8;padding:8px 14px;font-size:12px;border-radius:3px;outline:none;width:200px;font-family:monospace">
+      <button type="submit" style="background:#b8831e;color:#fff;border:none;padding:8px 18px;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;font-family:monospace">Subscribe</button>
+    </form>
+    <p id="footer-nl-msg" style="font-size:11px;color:#c8922a;margin-top:8px;display:none">You're on the list!</p>
   </div>
 </footer>
 
