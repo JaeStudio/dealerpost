@@ -375,6 +375,40 @@ tbody tr.opted-out td{color:var(--dim)}
 #toast.toast-ok{border-color:rgba(0,229,154,.35);color:var(--green)}
 #toast.toast-err{border-color:rgba(255,64,96,.35);color:var(--red)}
 
+/* ─── CHAT TRANSCRIPTS ───────────────────────────────────── */
+.chat-contact-row td{ background:rgba(240,200,74,0.06); }
+.chat-contact-row:hover td{ background:rgba(240,200,74,0.13) !important; }
+.transcript-drawer{
+  display:none;background:var(--surf);
+  border-top:1px solid var(--border);
+}
+.transcript-drawer.open{ display:table-row; }
+.transcript-inner{
+  padding:16px 20px;display:flex;flex-direction:column;gap:10px;
+  max-height:320px;overflow-y:auto;
+}
+.transcript-bubble-row{ display:flex; }
+.transcript-bubble-row.user{ justify-content:flex-end; }
+.transcript-bubble-row.assistant{ justify-content:flex-start; }
+.transcript-bubble{
+  max-width:72%;padding:9px 13px;border-radius:14px;
+  font-size:12px;line-height:1.55;word-break:break-word;
+}
+.transcript-bubble-row.user .transcript-bubble{
+  background:linear-gradient(135deg,#c8922a 0%,#f0c84a 100%);
+  color:#07070f;font-weight:500;border-bottom-right-radius:4px;
+}
+.transcript-bubble-row.assistant .transcript-bubble{
+  background:rgba(255,255,255,0.06);color:var(--text);
+  border:1px solid rgba(255,255,255,0.09);border-bottom-left-radius:4px;
+  border-left:2px solid rgba(240,200,74,0.3);
+}
+.transcript-ts{
+  font-size:9px;color:var(--dim);margin-top:3px;
+  font-family:'JetBrains Mono',monospace;
+}
+.transcript-bubble-row.user .transcript-ts{ text-align:right; }
+
 /* ─── SCROLLBAR ──────────────────────────────────────────── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -458,6 +492,10 @@ tbody tr.opted-out td{color:var(--dim)}
       <div class="nav-item" onclick="showSection('send',this)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         Send Newsletter
+      </div>
+      <div class="nav-item" onclick="showSection('chats',this)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chats
       </div>
     </nav>
     <div class="sidebar-footer">v1.0 &middot; DPAI</div>
@@ -604,6 +642,35 @@ tbody tr.opted-out td{color:var(--dim)}
         </div>
       </div>
 
+      <!-- SECTION: CHAT TRANSCRIPTS -->
+      <div id="sec-chats" style="display:none">
+        <div class="section-card">
+          <div class="section-head">
+            <span class="section-title">Chat Transcripts (last 50)</span>
+            <button class="btn-icon" onclick="loadChats(true)">
+              <svg id="refresh-icon-chats" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+              Refresh
+            </button>
+          </div>
+          <div class="table-wrap">
+            <table id="chats-table">
+              <thead>
+                <tr>
+                  <th>Visitor Email</th>
+                  <th style="text-align:center">Messages</th>
+                  <th style="text-align:center">Contact Requested</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="tbl-chats-body">
+                <tr class="loading-row"><td colspan="4">Loading&hellip;</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="table-footer" id="chats-count"></div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /app -->
@@ -679,7 +746,7 @@ gateBtn.addEventListener('click', attemptLogin);
 gatePw.addEventListener('keydown', e=>{ if(e.key==='Enter') attemptLogin(); });
 
 /* ─── NAVIGATION ──────────────────────────────────────────────────── */
-const ALL_SECTIONS = ['overview','leads','newsletters','send'];
+const ALL_SECTIONS = ['overview','leads','newsletters','send','chats'];
 
 function showSection(id, el){
   ALL_SECTIONS.forEach(s=>{
@@ -689,6 +756,7 @@ function showSection(id, el){
   if(el) el.classList.add('active');
   if(id==='leads')       loadLeads();
   if(id==='newsletters') loadNewsletters();
+  if(id==='chats')       loadChats();
 }
 
 /* ─── SUPABASE FETCH ──────────────────────────────────────────────── */
@@ -927,6 +995,88 @@ async function loadAll(){
   } catch(e){
     document.getElementById('stat-nl').textContent = 'Err';
   }
+}
+
+/* ─── CHAT TRANSCRIPTS ────────────────────────────────────────────── */
+let chatsLoaded = false;
+
+function renderChatRows(data){
+  const tbody = document.getElementById('tbl-chats-body');
+  if(!data || !data.length){
+    tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">No chat sessions recorded yet.</div></td></tr>`;
+    return;
+  }
+
+  const rows = [];
+  data.forEach((r, idx) => {
+    const contactClass = r.contact_requested ? 'chat-contact-row' : '';
+    const contactBadge = r.contact_requested
+      ? '<span class="badge" style="background:rgba(240,200,74,0.15);color:#f0c84a;border:1px solid rgba(240,200,74,0.35)">YES</span>'
+      : '<span class="badge" style="background:var(--raise);color:var(--dim);border:1px solid var(--border)">NO</span>';
+    const msgCount = Array.isArray(r.messages) ? r.messages.length : 0;
+    const drawerId = 'drawer-' + idx;
+
+    rows.push(`
+      <tr class="${contactClass}" style="cursor:pointer" onclick="toggleTranscript('${drawerId}', this)">
+        <td class="mono">${esc(r.visitor_email || '—')}</td>
+        <td class="mono" style="text-align:center">${msgCount}</td>
+        <td style="text-align:center">${contactBadge}</td>
+        <td class="mono" style="white-space:nowrap">${fmtDate(r.created_at)}</td>
+      </tr>
+      <tr class="transcript-drawer" id="${drawerId}">
+        <td colspan="4">
+          <div class="transcript-inner" id="inner-${drawerId}">
+            ${renderTranscriptBubbles(r.messages)}
+          </div>
+        </td>
+      </tr>`);
+  });
+
+  tbody.innerHTML = rows.join('');
+  document.getElementById('chats-count').textContent = `${data.length} sessions`;
+}
+
+function renderTranscriptBubbles(messages){
+  if(!Array.isArray(messages) || !messages.length){
+    return '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:var(--dim)">No messages recorded.</span>';
+  }
+  return messages.map(m => {
+    const role = (m.role === 'user') ? 'user' : 'assistant';
+    const label = role === 'user' ? 'Visitor' : 'Ava';
+    const ts = m.ts ? new Date(m.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) : '';
+    return `
+      <div class="transcript-bubble-row ${role}">
+        <div>
+          <div class="transcript-bubble">${esc(m.content || '')}</div>
+          <div class="transcript-ts">${esc(label)}${ts ? ' &middot; ' + ts : ''}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleTranscript(drawerId, clickedRow){
+  // Don't re-toggle when clicking on the drawer row itself
+  if(clickedRow.classList.contains('transcript-drawer')) return;
+  const drawer = document.getElementById(drawerId);
+  if(!drawer) return;
+  drawer.classList.toggle('open');
+}
+
+async function loadChats(force=false){
+  if(chatsLoaded && !force) return;
+  spinIcon('refresh-icon-chats');
+  document.getElementById('tbl-chats-body').innerHTML =
+    `<tr class="loading-row"><td colspan="4">Loading&hellip;</td></tr>`;
+  try{
+    const data = await sbFetch('chat_sessions?select=*&order=created_at.desc&limit=50');
+    chatsLoaded = true;
+    renderChatRows(data || []);
+  } catch(e){
+    document.getElementById('tbl-chats-body').innerHTML =
+      `<tr><td colspan="4" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px">Error: ${esc(e.message)}</td></tr>`;
+    showToast('Failed to load chat sessions', 'err');
+  }
+  stopSpin('refresh-icon-chats');
 }
 
 /* ─── INIT ────────────────────────────────────────────────────────── */

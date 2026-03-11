@@ -16,6 +16,16 @@
 
   var WELCOME_MSG = "Hey there! I'm Ava 👋 I'm here to help with anything — whether it's about DealerPost AI or just a question you've got. What's on your mind?";
 
+  // ─── Session ID ────────────────────────────────────────────────────────────
+  // Persists across page navigations within the same browser tab session.
+  // A new ID is generated only when the user opens a fresh tab or closes the browser.
+  var SESSION_STORAGE_KEY = 'dp_chat_session_id';
+  var sessionId = sessionStorage.getItem(SESSION_STORAGE_KEY);
+  if (!sessionId) {
+    sessionId = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+    sessionStorage.setItem(SESSION_STORAGE_KEY, sessionId);
+  }
+
   // Conversation history sent to the API
   var history = [];
 
@@ -431,6 +441,7 @@
     sendBtn.disabled = true;
 
     var payload = {
+      session_id: sessionId,
       messages: history,
     };
 
