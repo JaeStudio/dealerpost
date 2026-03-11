@@ -832,7 +832,7 @@ function renderLeadsRows(data, tbodyId){
       <td class="mono">${esc(r.email || '—')}</td>
       <td>${esc(r.dealership || r.dealer_name || '—')}</td>
       <td class="mono">${esc(r.stripe_promo_code || r.promo_code || r.discount_code || r.code || '—')}</td>
-      <td class="mono" style="white-space:nowrap">${fmtDate(r.created_at || r.claimed_at)}</td>
+      <td class="mono" style="white-space:nowrap">${fmtDate(r.submitted_at || r.created_at || r.claimed_at)}</td>
       <td>${r.opted_out
         ? '<span class="badge badge-opted">Opted Out</span>'
         : '<span class="badge badge-active">Active</span>'}</td>
@@ -845,7 +845,7 @@ async function loadLeads(force=false){
   document.getElementById('tbl-leads-body').innerHTML =
     `<tr class="loading-row"><td colspan="6">Loading&hellip;</td></tr>`;
   try{
-    const data = await sbFetch('discount_leads?select=*&order=created_at.desc');
+    const data = await sbFetch('discount_leads?select=*&order=submitted_at.desc');
     leadsData   = data || [];
     leadsLoaded = true;
     renderLeadsRows(leadsData, 'tbl-leads-body');
