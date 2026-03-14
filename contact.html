@@ -405,21 +405,89 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
   </div>
 </main>
 
-<footer>
-  <div style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding-bottom:20px;border-bottom:1px solid rgba(200,146,42,.08);margin-bottom:4px;flex-wrap:wrap">
-    <span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);white-space:nowrap">Get the weekly DealerPost Dispatch</span>
-    <form id="newsletterForm" novalidate style="display:flex;gap:6px;align-items:center">
-      <input id="nlEmail" type="email" placeholder="your@email.com" required style="background:rgba(4,4,12,.8);border:1px solid rgba(200,146,42,.18);border-radius:4px;padding:7px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:300;outline:none;width:200px;transition:border-color .2s" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='rgba(200,146,42,.18)'">
-      <button type="submit" style="background:var(--solid-gold);color:#fff;border:none;border-radius:3px;padding:7px 16px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .2s;white-space:nowrap" onmouseover="this.style.background='var(--gold2)'" onmouseout="this.style.background='var(--solid-gold)'">Subscribe</button>
-    </form>
-    <span id="nlMsg" style="display:none;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#22c55e"></span>
+<footer id="footer" style="position:relative;z-index:2;padding:80px 64px 0" class="site-footer">
+<div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(200,146,42,.12) 20%,rgba(240,200,74,.45) 50%,rgba(200,146,42,.12) 80%,transparent 100%)"></div>
+
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(200,146,42,.25),rgba(200,146,42,.5),rgba(200,146,42,.25),transparent);margin-bottom:72px"></div>
   </div>
-  <span class="footer-copy">&copy; 2025 DealerPost AI</span>
-  <nav class="footer-links">
-    <a href="privacy.html">Privacy</a>
-    <a href="terms.html">Terms</a>
-    <a href="contact.html">Contact</a>
-  </nav>
+
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;padding-bottom:56px;align-items:start">
+
+      <div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <span style="font-family:'Syncopate',sans-serif;font-size:12px;font-weight:700;letter-spacing:5px;color:rgba(238,238,248,.8)">DEALER<span style="background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">POST</span></span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:rgba(200,146,42,.5);border:1px solid rgba(200,146,42,.2);padding:2px 8px;border-radius:2px">V17</span>
+        </div>
+        <p style="font-size:13px;font-weight:300;line-height:1.85;color:rgba(238,238,248,.65);max-width:320px;margin-bottom:32px">The Chrome extension that posts your entire inventory to Facebook Marketplace in the time it takes to drink your morning coffee.</p>
+        <div style="border:1px solid rgba(200,146,42,.15);border-radius:10px;padding:20px 22px;background:rgba(200,146,42,.03);position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,146,42,.3),transparent)"></div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px">Need Help?</div>
+          <a href="mailto:hello@dealerpostai.com" style="display:flex;align-items:center;gap:10px;text-decoration:none;margin-bottom:8px;transition:opacity .2s" onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">
+            <span style="width:28px;height:28px;border-radius:50%;background:rgba(200,146,42,.1);border:1px solid rgba(200,146,42,.2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">✉️</span>
+            <span style="font-size:13px;font-weight:400;color:var(--gold3);letter-spacing:.3px">hello@dealerpostai.com</span>
+          </a>
+          <div style="font-size:11px;font-weight:300;color:rgba(238,238,248,.58);padding-left:38px">Same-day replies · Mon–Fri</div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(200,146,42,.6);margin-bottom:24px;display:flex;align-items:center;gap:10px"><span style="width:20px;height:1px;background:var(--gold);display:inline-block"></span>Features</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:6px"><span style="font-size:13px;flex-shrink:0">⚡</span><span style="font-size:12px;font-weight:300;color:rgba(238,238,248,.8)">Auto-Fill Forms</span></div>
+          <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:6px"><span style="font-size:13px;flex-shrink:0">📋</span><span style="font-size:12px;font-weight:300;color:rgba(238,238,248,.8)">Bulk Posting Queue</span></div>
+          <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:6px"><span style="font-size:13px;flex-shrink:0">📸</span><span style="font-size:12px;font-weight:300;color:rgba(238,238,248,.8)">Photo Auto-Upload</span></div>
+          <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:6px"><span style="font-size:13px;flex-shrink:0">🔌</span><span style="font-size:12px;font-weight:300;color:rgba(238,238,248,.8)">Chrome Extension</span></div>
+          <div style="display:flex;align-items:center;gap:9px;padding:9px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:6px"><span style="font-size:13px;flex-shrink:0">🏎️</span><span style="font-size:12px;font-weight:300;color:rgba(238,238,248,.8)">Inventory Sync</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(200,146,42,.6);margin-bottom:24px;display:flex;align-items:center;gap:10px"><span style="width:20px;height:1px;background:var(--gold);display:inline-block"></span>Trust &amp; Security</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:7px"><span style="font-size:15px;flex-shrink:0;margin-top:1px">🔒</span><div><div style="font-size:11.5px;font-weight:500;color:rgba(238,238,248,.7);margin-bottom:2px">Stripe Secured</div><div style="font-size:10px;font-weight:300;color:rgba(238,238,248,.55);line-height:1.5">All payments encrypted &amp; PCI-compliant</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:7px"><span style="font-size:15px;flex-shrink:0;margin-top:1px">🛡️</span><div><div style="font-size:11.5px;font-weight:500;color:rgba(238,238,248,.7);margin-bottom:2px">Dealer Trusted</div><div style="font-size:10px;font-weight:300;color:rgba(238,238,248,.55);line-height:1.5">Built for independent dealers &amp; groups</div></div></div>
+          <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(0,229,160,.03);border:1px solid rgba(0,229,160,.1);border-radius:7px"><span style="font-size:11px;flex-shrink:0;margin-top:3px;color:#00e59a">●</span><div><div style="font-size:11.5px;font-weight:500;color:rgba(238,238,248,.7);margin-bottom:2px">All Systems Operational</div><div style="font-size:10px;font-weight:300;color:rgba(238,238,248,.55);line-height:1.5">99.9% uptime · Live monitoring</div></div></div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(200,146,42,.6);margin-bottom:24px;display:flex;align-items:center;gap:10px"><span style="width:20px;height:1px;background:var(--gold);display:inline-block"></span>Legal</div>
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <a href="privacy.html" style="font-size:13px;font-weight:300;color:rgba(238,238,248,.4);text-decoration:none;padding:9px 0;border-bottom:1px solid rgba(200,146,42,.05);transition:color .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.color='rgba(238,238,248,.8)'" onmouseout="this.style.color='rgba(238,238,248,.4)'"><span style="font-size:10px;color:var(--gold)">→</span>Privacy Policy</a>
+          <a href="terms.html" style="font-size:13px;font-weight:300;color:rgba(238,238,248,.4);text-decoration:none;padding:9px 0;transition:color .2s;display:flex;align-items:center;gap:8px" onmouseover="this.style.color='rgba(238,238,248,.8)'" onmouseout="this.style.color='rgba(238,238,248,.4)'"><span style="font-size:10px;color:var(--gold)">→</span>Terms of Service</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="border-top:1px solid rgba(200,146,42,.07);padding:22px 0 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:rgba(90,90,128,.75)">© 2026 DealerPost AI &nbsp;·&nbsp; All rights reserved</div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.5px;color:rgba(90,90,128,.75)">Made for dealers who don't have time to waste</div>
+    </div>
+
+    <!-- Newsletter + Coupon row -->
+    <div style="border-top:1px solid rgba(200,146,42,.12);margin-top:8px;padding:28px 0 24px;display:grid;grid-template-columns:1fr 1fr;gap:0">
+      <div style="text-align:center;padding:0 24px">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;color:#5a5a80;text-transform:uppercase;margin-bottom:12px">Weekly DealerPost Dispatch</p>
+        <form id="footer-nl-form" style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap" onsubmit="footerNLSubmit(event)">
+          <input type="email" id="footer-nl-email" placeholder="your@email.com" required style="background:#0d0d1e;border:1px solid rgba(200,146,42,.2);color:#eeeef8;padding:7px 12px;font-size:12px;border-radius:3px;outline:none;width:175px;font-family:'DM Sans',sans-serif;transition:border-color .2s" onfocus="this.style.borderColor='rgba(200,146,42,.6)'" onblur="this.style.borderColor='rgba(200,146,42,.2)'">
+          <button type="submit" style="background:#b8831e;color:#fff;border:none;padding:7px 16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s" onmouseover="this.style.background='#d4a843'" onmouseout="this.style.background='#b8831e'">Subscribe</button>
+        </form>
+        <p id="footer-nl-msg" style="font-size:11px;color:#22c55e;margin-top:8px;display:none;font-family:'JetBrains Mono',monospace;letter-spacing:1px">You're on the list!</p>
+      </div>
+      <div style="text-align:center;padding:0 24px;border-left:1px solid rgba(200,146,42,.1)">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;color:rgba(212,168,67,.8);text-transform:uppercase;margin-bottom:12px">Get 50% Off Any Plan</p>
+        <form id="footer-coupon-form" style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap" onsubmit="footerCouponSubmit(event)">
+          <input type="email" id="footer-coupon-email" placeholder="your@email.com" required style="background:#0d0d1e;border:1px solid rgba(200,146,42,.3);color:#eeeef8;padding:7px 12px;font-size:12px;border-radius:3px;outline:none;width:175px;font-family:'DM Sans',sans-serif;transition:border-color .2s" onfocus="this.style.borderColor='rgba(200,146,42,.7)'" onblur="this.style.borderColor='rgba(200,146,42,.3)'">
+          <button type="submit" style="background:linear-gradient(135deg,#c8922a,#f0c060);color:#000;border:none;padding:7px 16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;font-weight:700;font-family:'DM Sans',sans-serif">Claim 50%</button>
+        </form>
+        <p id="footer-coupon-msg" style="font-size:11px;color:#22c55e;margin-top:8px;display:none;font-family:'JetBrains Mono',monospace;letter-spacing:1px">Check your email for your code!</p>
+      </div>
+    </div>
+
+  </div>
 </footer>
 
 <script src="chatbot.js"></script>
@@ -512,6 +580,8 @@ document.getElementById('newsletterForm').addEventListener('submit', async funct
     this.querySelector('button').textContent = 'Subscribe';
   }
 });
+async function footerNLSubmit(e){e.preventDefault();var email=document.getElementById('footer-nl-email').value.trim(),msg=document.getElementById('footer-nl-msg');try{await fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/subscribe-newsletter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});msg.textContent="You're on the list!";msg.style.color='#22c55e';msg.style.display='block';document.getElementById('footer-nl-form').style.display='none';}catch(err){msg.textContent='Error — try again.';msg.style.color='#ff4060';msg.style.display='block';}}
+async function footerCouponSubmit(e){e.preventDefault();var email=document.getElementById('footer-coupon-email').value.trim(),msg=document.getElementById('footer-coupon-msg'),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Sending...';try{await fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/claim-discount',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,name:'',dealership:''})});msg.textContent='Check your email for your 50% code!';msg.style.color='#22c55e';msg.style.display='block';document.getElementById('footer-coupon-form').style.display='none';}catch(err){msg.textContent='Error — try again.';msg.style.color='#ff4060';msg.style.display='block';btn.disabled=false;btn.textContent='Claim 50%';}}
 </script>
 </body>
 </html>
