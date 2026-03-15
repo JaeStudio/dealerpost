@@ -490,6 +490,14 @@ img[src*="unsplash"]{background:var(--card)}
 
 /* ══ FOOTER GOLD TOP BORDER ══ */
 .footer-gold-border{position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(200,146,42,.12) 20%,rgba(240,200,74,.45) 50%,rgba(200,146,42,.12) 80%,transparent 100%)}
+
+@media(max-width:600px){
+  .footer-cta-row{grid-template-columns:1fr !important;gap:24px !important;}
+  .footer-cta-row > div{border-left:none !important;padding:0 !important;}
+  .footer-cta-row input[type=email]{width:100% !important;box-sizing:border-box}
+  .footer-cta-row form{flex-direction:column !important;align-items:stretch !important}
+  .footer-cta-row button{width:100% !important}
+}
 </style>
 </head>
 <body>
@@ -531,7 +539,7 @@ img[src*="unsplash"]{background:var(--card)}
 <!-- ══ HERO ══ -->
 <section class="hero">
   <div class="hero-ambient"></div>
-  <div class="hero-kicker"><span class="kicker-dot"></span>Chrome Extension &nbsp;·&nbsp; Version 17 &nbsp;·&nbsp; Used By Real Dealers</div>
+  <div class="hero-kicker"><span class="kicker-dot"></span>The #1 Marketplace Tool for Car Dealers</div>
   <div class="hero-title">
     <span class="hl-white">SELL CARS,</span>
     <span class="hl-gold">NOT YOUR TIME.</span>
@@ -540,6 +548,7 @@ img[src*="unsplash"]{background:var(--card)}
   <p class="hero-body">Scan your inventory, generate AI captions in your brand's voice, auto-fill every Facebook Marketplace field, and post in under a minute per car. No copy-pasting. No manual typing. Just deals.</p>
   <div class="hero-btns">
     <a href="pricing.html#plans" class="btn-main">Start Posting Cars →</a>
+    <button class="btn-ghost" onclick="document.getElementById('dp-demo-modal').style.display='flex'">▶ Watch Demo</button>
     <a href="#fb" class="btn-ghost">See How It Works</a>
   </div>
 
@@ -594,6 +603,32 @@ img[src*="unsplash"]{background:var(--card)}
       <div class="stat-number">100%</div>
       <div class="stat-label">Dealership Focused</div>
     </div>
+  </div>
+</div>
+
+<!-- Pricing anchor bar -->
+<div style="padding:0 24px 0;max-width:900px;margin:0 auto 0">
+  <div style="display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:14px 24px;background:rgba(200,146,42,.04);border:1px solid rgba(200,146,42,.12);border-radius:50px">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:#5a5a80;text-transform:uppercase;margin-right:4px">Plans:</span>
+    <a href="pricing.html#plans" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;border:1px solid rgba(200,146,42,.15);background:rgba(200,146,42,.06);text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='rgba(200,146,42,.4)'" onmouseout="this.style.borderColor='rgba(200,146,42,.15)'">
+      <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(238,238,248,.6)">Solo</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f0c84a;font-weight:600">$99</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a5a80">/mo</span>
+    </a>
+    <span style="color:rgba(200,146,42,.2);font-size:12px">·</span>
+    <a href="pricing.html#plans" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;border:1px solid rgba(200,146,42,.35);background:rgba(200,146,42,.1);text-decoration:none;position:relative;transition:all .2s" onmouseover="this.style.borderColor='rgba(200,146,42,.6)'" onmouseout="this.style.borderColor='rgba(200,146,42,.35)'">
+      <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(238,238,248,.8)">Dealer Pro</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f0c84a;font-weight:600">$495</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#5a5a80">/mo</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1px;color:#c8922a;background:rgba(200,146,42,.15);padding:1px 6px;border-radius:10px;text-transform:uppercase">Popular</span>
+    </a>
+    <span style="color:rgba(200,146,42,.2);font-size:12px">·</span>
+    <a href="pricing.html#plans" style="display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:20px;border:1px solid rgba(200,146,42,.15);background:rgba(200,146,42,.06);text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='rgba(200,146,42,.4)'" onmouseout="this.style.borderColor='rgba(200,146,42,.15)'">
+      <span style="font-family:'DM Sans',sans-serif;font-size:12px;color:rgba(238,238,248,.6)">Enterprise</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#f0c84a;font-weight:600">Custom</span>
+    </a>
+    <span style="color:rgba(200,146,42,.2);font-size:12px;margin:0 2px">·</span>
+    <a href="pricing.html#plans" style="font-family:'DM Sans',sans-serif;font-size:11px;color:#c8922a;text-decoration:none;letter-spacing:.5px;padding:5px 8px;transition:color .2s" onmouseover="this.style.color='#f0c84a'" onmouseout="this.style.color='#c8922a'">First month 50% off →</a>
   </div>
 </div>
 
@@ -980,6 +1015,91 @@ if(cs)crawlObs.observe(cs);
 })();
 </script>
 
+<!-- Testimonials -->
+<section style="padding:80px 0 60px;overflow:hidden">
+  <div style="text-align:center;margin-bottom:40px;padding:0 24px">
+    <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:3px;color:#c8922a;text-transform:uppercase;margin-bottom:14px">What Dealers Are Saying</div>
+    <h2 style="font-family:'Syncopate',sans-serif;font-size:clamp(18px,3vw,26px);font-weight:700;color:#eeeef8;letter-spacing:1px">Real results. Real dealers.</h2>
+  </div>
+  <style>
+    .dp-testi-track{display:flex;gap:20px;width:max-content;animation:dp-testi-scroll 32s linear infinite}
+    .dp-testi-track:hover{animation-play-state:paused}
+    @keyframes dp-testi-scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .dp-testi-card{width:320px;flex-shrink:0;background:#0d0d1e;border:1px solid rgba(240,200,74,.12);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:14px}
+    .dp-testi-stars{display:flex;gap:3px}
+    .dp-testi-star{color:#f0c84a;font-size:13px}
+    .dp-testi-quote{font-size:14px;line-height:1.7;color:rgba(238,238,248,.8);font-style:italic;flex:1}
+    .dp-testi-author{display:flex;flex-direction:column;gap:2px;border-top:1px solid rgba(240,200,74,.08);padding-top:14px}
+    .dp-testi-name{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#eeeef8}
+    .dp-testi-role{font-family:'JetBrains Mono',monospace;font-size:10px;color:#5a5a80;letter-spacing:.5px}
+  </style>
+  <div style="position:relative">
+    <!-- fade edges -->
+    <div style="position:absolute;left:0;top:0;bottom:0;width:120px;background:linear-gradient(to right,#02020a,transparent);z-index:2;pointer-events:none"></div>
+    <div style="position:absolute;right:0;top:0;bottom:0;width:120px;background:linear-gradient(to left,#02020a,transparent);z-index:2;pointer-events:none"></div>
+    <div style="overflow:hidden;padding:8px 0">
+      <div class="dp-testi-track">
+        <!-- Card 1 -->
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"Used to spend 20 minutes per listing. Now it takes 2 minutes. I don't know how we did it before."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Marcus R.</span><span class="dp-testi-role">Sales Manager</span></div>
+        </div>
+        <!-- Card 2 -->
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"At $495 it's cheaper than the part-time hire we replaced. And it doesn't call in sick."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Damon T.</span><span class="dp-testi-role">Dealer Owner</span></div>
+        </div>
+        <!-- Card 3 -->
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"Internet leads from Marketplace went up 34% in the first month. We weren't even tracking it before."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Amanda V.</span><span class="dp-testi-role">Digital Director</span></div>
+        </div>
+        <!-- Card 4 -->
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"I come in Monday morning and everything's already posted from the weekend. Game changer."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Terrell W.</span><span class="dp-testi-role">Used Car Manager</span></div>
+        </div>
+        <!-- Card 5 -->
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"Setup took 4 minutes. First listing done before I finished my coffee. Ridiculous how easy it is."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Ryan L.</span><span class="dp-testi-role">General Manager</span></div>
+        </div>
+        <!-- Duplicate set for seamless loop -->
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"Used to spend 20 minutes per listing. Now it takes 2 minutes. I don't know how we did it before."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Marcus R.</span><span class="dp-testi-role">Sales Manager</span></div>
+        </div>
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"At $495 it's cheaper than the part-time hire we replaced. And it doesn't call in sick."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Damon T.</span><span class="dp-testi-role">Dealer Owner</span></div>
+        </div>
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"Internet leads from Marketplace went up 34% in the first month. We weren't even tracking it before."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Amanda V.</span><span class="dp-testi-role">Digital Director</span></div>
+        </div>
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"I come in Monday morning and everything's already posted from the weekend. Game changer."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Terrell W.</span><span class="dp-testi-role">Used Car Manager</span></div>
+        </div>
+        <div class="dp-testi-card">
+          <div class="dp-testi-stars">★★★★★</div>
+          <div class="dp-testi-quote">"Setup took 4 minutes. First listing done before I finished my coffee. Ridiculous how easy it is."</div>
+          <div class="dp-testi-author"><span class="dp-testi-name">Ryan L.</span><span class="dp-testi-role">General Manager</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ══ FOOTER ══ -->
 <!-- ══ PRE-FOOTER SECTION DIVIDER ══ -->
 <div class="section-divider"></div>
@@ -1054,7 +1174,7 @@ if(cs)crawlObs.observe(cs);
         <div style="display:flex;flex-direction:column;gap:8px">
           <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:7px">
             <span style="font-size:15px;flex-shrink:0;margin-top:1px">🔒</span>
-            <div><div style="font-size:11.5px;font-weight:500;color:rgba(238,238,248,.7);margin-bottom:2px">Stripe Secured</div><div style="font-size:10px;font-weight:300;color:rgba(238,238,248,.55);line-height:1.5">All payments encrypted &amp; PCI-compliant</div></div>
+            <div><div style="font-size:11.5px;font-weight:500;color:rgba(238,238,248,.7);margin-bottom:2px"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="16" viewBox="0 0 60 25" fill="none" style="vertical-align:middle;opacity:.7"><path d="M5.45 10.18c0-.88.72-1.22 1.92-1.22 1.71 0 3.87.52 5.58 1.44V5.42C11.1 4.72 9.26 4.44 7.4 4.44 3.02 4.44 0 6.72 0 10.4c0 5.8 7.98 4.87 7.98 7.37 0 1.04-.9 1.38-2.16 1.38-1.87 0-4.25-.77-6.13-1.8v4.96c2.08.9 4.19 1.28 6.13 1.28 4.5 0 7.59-2.22 7.59-5.95-.03-6.26-8.0-5.14-7.96-7.46zM22.45 1.5l-4.9 1.04-.02 16.08 4.92-.01V1.5zm5.28 5.56l-.31-1.04h-4.22v17.2h4.9V13.1c1.16-1.51 3.12-1.23 3.73-.04V6.1c-.64-.22-2.97-.64-4.1.96zm9.56-3.63l-4.88 1.04V7.1l4.88-1.04V3.43zm-4.88 4.7h4.88v14.1h-4.88V8.13zm17.47-.4c-1.18 0-2.27.43-3.12 1.14l-.2-.9H42.3v19.2l4.9-1.04.01-4.65c.87.63 2.15 1.52 4.27 1.52 4.31 0 8.23-3.47 8.23-11.1-.01-7-3.96-10.17-7.99-10.17zm-1.41 15.6c-1.42 0-2.26-.51-2.84-1.14l-.03-8.99c.62-.69 1.48-1.18 2.87-1.18 2.19 0 3.7 2.46 3.7 5.62 0 3.23-1.49 5.69-3.7 5.69z" fill="#635BFF"/></svg> Stripe Secured</div><div style="font-size:10px;font-weight:300;color:rgba(238,238,248,.55);line-height:1.5">All payments encrypted &amp; PCI-compliant</div></div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:rgba(200,146,42,.03);border:1px solid rgba(200,146,42,.07);border-radius:7px">
             <span style="font-size:15px;flex-shrink:0;margin-top:1px">🛡️</span>
@@ -1093,10 +1213,11 @@ if(cs)crawlObs.observe(cs);
   </div>
 
   <!-- Newsletter + Coupon row -->
-  <div style="border-top:1px solid rgba(200,146,42,.12);margin-top:8px;padding:28px 0 24px;display:grid;grid-template-columns:1fr 1fr;gap:0">
+  <div class="footer-cta-row" style="border-top:1px solid rgba(200,146,42,.12);margin-top:8px;padding:28px 0 24px;display:grid;grid-template-columns:1fr 1fr;gap:0">
     <!-- Newsletter -->
     <div style="text-align:center;padding:0 24px">
-      <p style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;color:#5a5a80;text-transform:uppercase;margin-bottom:12px">Weekly DealerPost Dispatch</p>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2.5px;color:#5a5a80;text-transform:uppercase;margin-bottom:4px">THE WEEKLY PLAYBOOK</p>
+      <p style="font-family:'DM Sans',sans-serif;font-size:11px;color:rgba(238,238,248,.4);margin-bottom:12px">Dealer tips, scripts &amp; strategies. Free every week.</p>
       <form id="footer-nl-form" style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap" onsubmit="footerNLSubmit(event)">
         <input type="email" id="footer-nl-email" placeholder="your@email.com" required style="background:#0d0d1e;border:1px solid rgba(200,146,42,.2);color:#eeeef8;padding:7px 12px;font-size:12px;border-radius:3px;outline:none;width:175px;font-family:'DM Sans',sans-serif;transition:border-color .2s" onfocus="this.style.borderColor='rgba(200,146,42,.6)'" onblur="this.style.borderColor='rgba(200,146,42,.2)'">
         <button type="submit" style="background:#b8831e;color:#fff;border:none;padding:7px 16px;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s" onmouseover="this.style.background='#d4a843'" onmouseout="this.style.background='#b8831e'">Subscribe</button>
@@ -1115,6 +1236,35 @@ if(cs)crawlObs.observe(cs);
   </div>
 </footer>
 
+<!-- Demo Modal -->
+<div id="dp-demo-modal" style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(2,2,10,.92);align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(8px)" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background:#0d0d1e;border:1px solid rgba(240,200,74,.25);border-radius:20px;width:100%;max-width:720px;overflow:hidden;box-shadow:0 40px 120px rgba(0,0,0,.9),0 0 60px rgba(240,200,74,.08)">
+    <!-- Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid rgba(240,200,74,.1)">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:#c8922a;text-transform:uppercase;margin-bottom:4px">DealerPost AI</div>
+        <div style="font-family:'Syncopate',sans-serif;font-size:14px;font-weight:700;color:#eeeef8;letter-spacing:1px">See It In Action</div>
+      </div>
+      <button onclick="document.getElementById('dp-demo-modal').style.display='none'" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(238,238,248,.5);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .15s" onmouseover="this.style.borderColor='rgba(240,200,74,.3)';this.style.color='#f0c84a'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)';this.style.color='rgba(238,238,248,.5)'">✕</button>
+    </div>
+    <!-- Video area — swap src when video is ready -->
+    <div id="dp-demo-video-wrap" style="display:none;position:relative;padding-bottom:56.25%;background:#000">
+      <iframe id="dp-demo-iframe" src="" title="DealerPost AI Demo" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%"></iframe>
+    </div>
+    <!-- Coming soon state — remove this div when video is ready -->
+    <div id="dp-demo-soon" style="padding:56px 32px;text-align:center">
+      <div style="font-size:48px;margin-bottom:20px">🎬</div>
+      <div style="font-family:'Syncopate',sans-serif;font-size:13px;font-weight:700;color:#eeeef8;letter-spacing:2px;margin-bottom:10px">DEMO DROPPING SOON</div>
+      <div style="font-size:14px;color:rgba(238,238,248,.5);margin-bottom:32px;line-height:1.6">Watch DealerPost AI post a car to Facebook Marketplace<br>in under 60 seconds — live on a real dealer's inventory.</div>
+      <form id="demo-notify-form" onsubmit="demoNotifySubmit(event)" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;max-width:400px;margin:0 auto">
+        <input type="email" id="demo-notify-email" placeholder="your@email.com" required style="flex:1;min-width:200px;background:rgba(255,255,255,.05);border:1px solid rgba(240,200,74,.2);color:#eeeef8;padding:10px 14px;font-size:13px;border-radius:6px;outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s" onfocus="this.style.borderColor='rgba(240,200,74,.6)'" onblur="this.style.borderColor='rgba(240,200,74,.2)'">
+        <button type="submit" style="background:#b8831e;color:#fff;border:none;padding:10px 20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;white-space:nowrap;transition:background .2s" onmouseover="this.style.background='#d4a843'" onmouseout="this.style.background='#b8831e'">Notify Me</button>
+      </form>
+      <p id="demo-notify-msg" style="font-size:11px;color:#22c55e;margin-top:12px;display:none;font-family:'JetBrains Mono',monospace;letter-spacing:1px">You're on the list — we'll email you the moment it's live.</p>
+    </div>
+  </div>
+</div>
+
 <!-- DealerPost AI Chatbot Widget -->
 <script src="chatbot.js"></script>
 
@@ -1123,6 +1273,21 @@ if(cs)crawlObs.observe(cs);
 // ACCORDION
 function toggleAcc(id){
   var body=docu
+async function demoNotifySubmit(e){
+  e.preventDefault();
+  const email = document.getElementById('demo-notify-email').value.trim();
+  if(!email) return;
+  // Reuse newsletter signup endpoint
+  try{
+    await fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/subscribe-newsletter', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email, source: 'demo_notify' })
+    });
+  } catch(e){}
+  document.getElementById('demo-notify-form').style.display='none';
+  document.getElementById('demo-notify-msg').style.display='block';
+}
 async function footerNLSubmit(e){e.preventDefault();var email=document.getElementById('footer-nl-email').value.trim(),msg=document.getElementById('footer-nl-msg');try{await fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/subscribe-newsletter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});msg.textContent="You're on the list!";msg.style.color='#22c55e';msg.style.display='block';document.getElementById('footer-nl-form').style.display='none';}catch(err){msg.textContent='Error — try again.';msg.style.color='#ff4060';msg.style.display='block';}}
 async function footerCouponSubmit(e){e.preventDefault();var email=document.getElementById('footer-coupon-email').value.trim(),msg=document.getElementById('footer-coupon-msg'),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Sending...';try{await fetch('https://nzsabhwodjlkumzlmmxf.supabase.co/functions/v1/claim-discount',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,name:'',dealership:''})});msg.textContent='Check your email for your 50% code!';msg.style.color='#22c55e';msg.style.display='block';document.getElementById('footer-coupon-form').style.display='none';}catch(err){msg.textContent='Error — try again.';msg.style.color='#ff4060';msg.style.display='block';btn.disabled=false;btn.textContent='Claim 50%';}}
 </script>
