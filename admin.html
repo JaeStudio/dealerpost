@@ -972,7 +972,7 @@ async function loadAll(){
   spinIcon('refresh-icon-ov');
   try{
     // Load overview + stats from a single full leads fetch
-    const data = await sbFetch('discount_leads?select=*&order=created_at.desc');
+    const data = await sbFetch('discount_leads?select=*&order=submitted_at.desc');
     leadsData   = data || [];
     leadsLoaded = true;
     updateLeadStats(leadsData);
@@ -1007,33 +1007,67 @@ function renderChatRows(data){
     return;
   }
 
+  // Group sessions by email (or by session_id if no email)
+  const grouped = {};
+  data.forEach(r => {
+    const key = r.visitor_email ? r.visitor_email.toLowerCase() : ('anon::' + r.session_id);
+    if(!grouped[key]){
+      grouped[key] = { email: r.visitor_email, name: r.visitor_name, contact_requested: false, sessions: [], latest: r.created_at };
+    }
+    grouped[key].sessions.push(r);
+    if(r.contact_requested) grouped[key].contact_requested = true;
+    if(r.created_at > grouped[key].latest) grouped[key].latest = r.created_at;
+  });
+
+  // Sort groups: contact_requested first, then by latest date
+  const groups = Object.values(grouped).sort((a,b) => {
+    if(a.contact_requested !== b.contact_requested) return a.contact_requested ? -1 : 1;
+    return new Date(b.latest) - new Date(a.latest);
+  });
+
   const rows = [];
-  data.forEach((r, idx) => {
-    const contactClass = r.contact_requested ? 'chat-contact-row' : '';
-    const contactBadge = r.contact_requested
-      ? '<span class="badge" style="background:rgba(240,200,74,0.15);color:#f0c84a;border:1px solid rgba(240,200,74,0.35)">YES</span>'
-      : '<span class="badge" style="background:var(--raise);color:var(--dim);border:1px solid var(--border)">NO</span>';
-    const msgCount = Array.isArray(r.messages) ? r.messages.length : 0;
+  groups.forEach((g, idx) => {
+    // Merge all messages across sessions for this visitor (chronological)
+    const allMessages = g.sessions.flatMap(s => Array.isArray(s.messages) ? s.messages : [])
+      .sort((a,b) => (a.ts||'') < (b.ts||'') ? -1 : 1);
+
+    const contactClass = g.contact_requested ? 'chat-contact-row' : '';
+    const contactBadge = g.contact_requested
+      ? '<span class="badge" style="background:rgba(240,200,74,0.15);color:#f0c84a;border:1px solid rgba(240,200,74,0.35)">CONTACT</span>'
+      : '<span class="badge" style="background:var(--raise);color:var(--dim);border:1px solid var(--border)">browsing</span>';
+
+    // Summary: first user message + last user message if different
+    const userMsgs = allMessages.filter(m => m.role === 'user');
+    const firstMsg = userMsgs[0]?.content || '';
+    const lastMsg  = userMsgs[userMsgs.length - 1]?.content || '';
+    let preview = firstMsg.length > 80 ? firstMsg.slice(0, 78) + '…' : firstMsg;
+    if(userMsgs.length > 1 && lastMsg !== firstMsg){
+      const lastPreview = lastMsg.length > 50 ? lastMsg.slice(0,48)+'…' : lastMsg;
+      preview += `<span style="color:var(--dim)"> → ${esc(lastPreview)}</span>`;
+    }
+
+    const displayName = g.name ? `<span style="color:var(--amber)">${esc(g.name)}</span> ` : '';
     const drawerId = 'drawer-' + idx;
+    const sessionCount = g.sessions.length > 1 ? `<span style="color:var(--dim);font-size:10px"> (${g.sessions.length} sessions)</span>` : '';
 
     rows.push(`
       <tr class="${contactClass}" style="cursor:pointer" onclick="toggleTranscript('${drawerId}', this)">
-        <td class="mono">${esc(r.visitor_email || '—')}</td>
-        <td class="mono" style="text-align:center">${msgCount}</td>
+        <td class="mono">${displayName}${esc(g.email || 'anonymous')}${sessionCount}</td>
+        <td style="font-size:11px;color:var(--text-muted);max-width:300px;overflow:hidden">${preview}</td>
         <td style="text-align:center">${contactBadge}</td>
-        <td class="mono" style="white-space:nowrap">${fmtDate(r.created_at)}</td>
+        <td class="mono" style="white-space:nowrap">${fmtDate(g.latest)}</td>
       </tr>
       <tr class="transcript-drawer" id="${drawerId}">
         <td colspan="4">
           <div class="transcript-inner" id="inner-${drawerId}">
-            ${renderTranscriptBubbles(r.messages)}
+            ${renderTranscriptBubbles(allMessages)}
           </div>
         </td>
       </tr>`);
   });
 
   tbody.innerHTML = rows.join('');
-  document.getElementById('chats-count').textContent = `${data.length} sessions`;
+  document.getElementById('chats-count').textContent = `${groups.length} visitors (${data.length} sessions)`;
 }
 
 function renderTranscriptBubbles(messages){
