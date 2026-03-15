@@ -409,6 +409,25 @@ tbody tr.opted-out td{color:var(--dim)}
 }
 .transcript-bubble-row.user .transcript-ts{ text-align:right; }
 
+/* ─── CHAT FILTERS ───────────────────────────────────────── */
+.chat-filter{
+  padding:5px 12px;font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:1px;border-radius:20px;border:1px solid var(--border);
+  background:var(--raise);color:var(--dim);cursor:pointer;transition:all .15s;
+}
+.chat-filter:hover{ border-color:var(--amber);color:var(--amber); }
+.chat-filter.active{ background:var(--amber);color:#000;border-color:var(--amber);font-weight:600; }
+
+/* ─── NEWSLETTER TYPE BUTTONS ────────────────────────────── */
+.nl-type-btn{
+  padding:10px 8px;font-size:11px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:.5px;border-radius:6px;border:1px solid var(--border);
+  background:var(--raise);color:var(--dim);cursor:pointer;text-align:center;
+  transition:all .15s;
+}
+.nl-type-btn:hover{ border-color:var(--amber);color:var(--text); }
+.nl-type-btn.active{ border-color:var(--amber);background:rgba(200,146,42,.12);color:var(--amber); }
+
 /* ─── SCROLLBAR ──────────────────────────────────────────── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -616,27 +635,61 @@ tbody tr.opted-out td{color:var(--dim)}
         <div class="section-card">
           <div class="section-head">
             <span class="section-title">Send Newsletter</span>
+            <span id="nl-sub-count" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)">Loading subscribers…</span>
           </div>
           <div class="form-body">
+
+            <!-- Content type selector -->
+            <div class="form-group full" style="margin-bottom:18px">
+              <label class="form-label">Content Type <span style="color:var(--dim)">(AI generates this)</span></label>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px" id="nl-type-grid">
+                <div class="nl-type-btn active" data-type="Quick Win"         data-emoji="⚡" onclick="selectNlType(this)">⚡ Quick Win</div>
+                <div class="nl-type-btn"        data-type="Industry Insight"  data-emoji="📈" onclick="selectNlType(this)">📈 Industry Insight</div>
+                <div class="nl-type-btn"        data-type="Sales Script"      data-emoji="💬" onclick="selectNlType(this)">💬 Sales Script</div>
+                <div class="nl-type-btn"        data-type="Lot Strategy"      data-emoji="🚗" onclick="selectNlType(this)">🚗 Lot Strategy</div>
+                <div class="nl-type-btn"        data-type="Digital Edge"      data-emoji="💻" onclick="selectNlType(this)">💻 Digital Edge</div>
+                <div class="nl-type-btn"        data-type="Team Builder"      data-emoji="👥" onclick="selectNlType(this)">👥 Team Builder</div>
+                <div class="nl-type-btn"        data-type="Customer Intel"    data-emoji="🧠" onclick="selectNlType(this)">🧠 Customer Intel</div>
+                <div class="nl-type-btn"        data-type="This Week's Play"  data-emoji="🎯" onclick="selectNlType(this)">🎯 This Week's Play</div>
+              </div>
+            </div>
+
             <div class="form-grid">
               <div class="form-group">
-                <label class="form-label">Issue Number</label>
-                <input class="form-input" type="number" id="nl-issue" placeholder="e.g. 7" min="1">
+                <label class="form-label">Issue # <span style="color:var(--dim)">(auto-detected)</span></label>
+                <input class="form-input" type="number" id="nl-issue" placeholder="Auto" min="1">
               </div>
               <div class="form-group">
-                <label class="form-label">Preview To (optional)</label>
-                <input class="form-input" type="email" id="nl-preview-email" placeholder="you@dealerpostai.com">
+                <label class="form-label">Preview Email</label>
+                <input class="form-input" type="email" id="nl-preview-email" placeholder="hello@dealerpostai.com">
               </div>
               <div class="form-group full">
-                <label class="form-label">Subject Line</label>
-                <input class="form-input" type="text" id="nl-subject" placeholder="e.g. DealerPost AI — Issue #7: Top 5 Scripts">
+                <label class="form-label">Subject Line <span style="color:var(--dim)">(auto-generated, editable)</span></label>
+                <input class="form-input" type="text" id="nl-subject" placeholder="Select a content type above…">
               </div>
             </div>
-            <div class="form-actions">
-              <button class="btn-primary" id="nl-send-btn" onclick="sendNewsletter()">Send Preview</button>
-              <button class="btn-outline" onclick="clearNlForm()">Clear</button>
-              <span id="nl-sending" style="display:none;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px">Sending&hellip;</span>
+
+            <!-- Action row -->
+            <div class="form-actions" style="gap:10px;flex-wrap:wrap">
+              <button class="btn-outline" id="nl-preview-btn" onclick="sendNewsletter('preview')" style="flex:1;min-width:160px">
+                👁 Send Preview to My Email
+              </button>
+              <button class="btn-primary" id="nl-send-btn" onclick="confirmSendAll()" style="flex:1;min-width:160px">
+                🚀 Send to All Subscribers
+              </button>
+              <span id="nl-sending" style="display:none;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:1px;align-self:center">Sending…</span>
             </div>
+
+            <!-- Confirm overlay -->
+            <div id="nl-confirm" style="display:none;margin-top:16px;padding:16px;background:rgba(240,200,74,0.08);border:1px solid rgba(240,200,74,0.3);border-radius:8px">
+              <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber);margin-bottom:12px;letter-spacing:1px">⚠ CONFIRM SEND TO ALL</div>
+              <div id="nl-confirm-msg" style="font-size:13px;color:var(--text);margin-bottom:14px"></div>
+              <div style="display:flex;gap:10px">
+                <button class="btn-primary" onclick="sendNewsletter('all')" style="background:var(--amber);color:#000">Yes, Send Now</button>
+                <button class="btn-outline" onclick="document.getElementById('nl-confirm').style.display='none'">Cancel</button>
+              </div>
+            </div>
+
             <div class="response-box" id="nl-response"></div>
           </div>
         </div>
@@ -646,24 +699,35 @@ tbody tr.opted-out td{color:var(--dim)}
       <div id="sec-chats" style="display:none">
         <div class="section-card">
           <div class="section-head">
-            <span class="section-title">Chat Transcripts (last 50)</span>
+            <span class="section-title">Chat Transcripts</span>
             <button class="btn-icon" onclick="loadChats(true)">
               <svg id="refresh-icon-chats" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
               Refresh
             </button>
           </div>
+          <!-- Filter bar -->
+          <div id="chat-filter-bar" style="display:flex;gap:6px;flex-wrap:wrap;padding:0 0 16px 0">
+            <button class="chat-filter active" data-cat="all"      onclick="filterChats('all',this)">All</button>
+            <button class="chat-filter"        data-cat="hot"      onclick="filterChats('hot',this)">🔴 Hot</button>
+            <button class="chat-filter"        data-cat="warm"     onclick="filterChats('warm',this)">🟡 Warm</button>
+            <button class="chat-filter"        data-cat="browsing" onclick="filterChats('browsing',this)">👀 Browsing</button>
+            <button class="chat-filter"        data-cat="support"  onclick="filterChats('support',this)">🔧 Support</button>
+            <button class="chat-filter"        data-cat="faq"      onclick="filterChats('faq',this)">❓ FAQ</button>
+            <button class="chat-filter"        data-cat="unread"   onclick="filterChats('unread',this)">🔵 Unread</button>
+          </div>
           <div class="table-wrap">
             <table id="chats-table">
               <thead>
                 <tr>
-                  <th>Visitor Email</th>
-                  <th style="text-align:center">Messages</th>
-                  <th style="text-align:center">Contact Requested</th>
+                  <th style="width:32px"></th>
+                  <th>Visitor</th>
+                  <th>Summary</th>
+                  <th style="text-align:center">Category</th>
                   <th>Date</th>
                 </tr>
               </thead>
               <tbody id="tbl-chats-body">
-                <tr class="loading-row"><td colspan="4">Loading&hellip;</td></tr>
+                <tr class="loading-row"><td colspan="5">Loading&hellip;</td></tr>
               </tbody>
             </table>
           </div>
@@ -916,33 +980,78 @@ async function loadNewsletters(force=false){
 }
 
 /* ─── SEND NEWSLETTER ─────────────────────────────────────────────── */
-async function sendNewsletter(){
-  const issue   = document.getElementById('nl-issue').value.trim();
-  const subject = document.getElementById('nl-subject').value.trim();
-  const preview = document.getElementById('nl-preview-email').value.trim();
-  const btn     = document.getElementById('nl-send-btn');
-  const spinner = document.getElementById('nl-sending');
-  const resBox  = document.getElementById('nl-response');
+const NL_SUBJECTS = {
+  'Quick Win':        n => `⚡ The Dispatch #${n} — Quick Win: Close More This Week`,
+  'Industry Insight': n => `📈 The Dispatch #${n} — Intel Your Competitors Don't Have`,
+  'Sales Script':     n => `💬 The Dispatch #${n} — Word-for-Word Script to Handle Any Objection`,
+  'Lot Strategy':     n => `🚗 The Dispatch #${n} — Lot Strategy: Move Metal Faster`,
+  'Digital Edge':     n => `💻 The Dispatch #${n} — One Tactic to Win on Marketplace`,
+  'Team Builder':     n => `👥 The Dispatch #${n} — Build a Stronger Sales Floor This Week`,
+  'Customer Intel':   n => `🧠 The Dispatch #${n} — How Car Buyers Actually Think`,
+  "This Week's Play": n => `🎯 The Dispatch #${n} — This Week's Play: Run It Now`,
+};
 
-  if(!issue || !subject){
-    showToast('Issue # and Subject are required', 'err');
-    return;
+let selectedNlType = 'Quick Win';
+let nlSubCount = 0;
+
+function selectNlType(el){
+  document.querySelectorAll('.nl-type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  selectedNlType = el.dataset.type;
+  updateNlSubject();
+}
+
+function updateNlSubject(){
+  const issue   = parseInt(document.getElementById('nl-issue').value||'0', 10) || '?';
+  const subjFn  = NL_SUBJECTS[selectedNlType];
+  if(subjFn) document.getElementById('nl-subject').value = subjFn(issue);
+}
+
+async function loadNlSubscriberCount(){
+  try{
+    const data = await sbFetch('discount_leads?select=id&or=(opted_out.is.null,opted_out.eq.false)');
+    nlSubCount = (data||[]).length;
+    document.getElementById('nl-sub-count').textContent = `${nlSubCount} subscribers`;
+  } catch(e){
+    document.getElementById('nl-sub-count').textContent = 'Could not load subscriber count';
   }
+}
 
-  btn.disabled        = true;
+function confirmSendAll(){
+  const subject = document.getElementById('nl-subject').value.trim();
+  if(!subject){ showToast('Enter a subject line first', 'err'); return; }
+  const conf = document.getElementById('nl-confirm');
+  document.getElementById('nl-confirm-msg').textContent =
+    `This will send "${subject}" to all ${nlSubCount} subscribers. This cannot be undone.`;
+  conf.style.display = 'block';
+  conf.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function sendNewsletter(mode){
+  // mode: 'preview' | 'all'
+  document.getElementById('nl-confirm').style.display = 'none';
+  const subject  = document.getElementById('nl-subject').value.trim();
+  const preview  = document.getElementById('nl-preview-email').value.trim();
+  const issueVal = document.getElementById('nl-issue').value.trim();
+  const spinner  = document.getElementById('nl-sending');
+  const resBox   = document.getElementById('nl-response');
+
+  if(!subject){ showToast('Subject line required', 'err'); return; }
+  if(mode === 'preview' && !preview){ showToast('Enter a preview email address', 'err'); return; }
+
+  document.getElementById('nl-preview-btn').disabled = true;
+  document.getElementById('nl-send-btn').disabled    = true;
   spinner.style.display = 'inline';
-  resBox.className    = 'response-box';
+  resBox.className = 'response-box';
 
-  const payload = { issue_number: parseInt(issue, 10), subject };
-  if(preview) payload.preview_to = preview;
+  const payload = { subject };
+  if(issueVal) payload.issue = parseInt(issueVal, 10);
+  if(mode === 'preview') payload.preview_to = preview;
 
   try{
     const res = await fetch(`${SUPABASE_URL}/functions/v1/send-newsletter`, {
       method:  'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${NEWSLETTER_SECRET}`,
-      },
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${NEWSLETTER_SECRET}` },
       body: JSON.stringify(payload),
     });
     const text = await res.text();
@@ -950,14 +1059,21 @@ async function sendNewsletter(){
     try{ pretty = JSON.stringify(JSON.parse(text), null, 2); } catch(e){}
     resBox.textContent = `HTTP ${res.status}\n\n${pretty}`;
     resBox.className   = `response-box vis ${res.ok ? 'ok' : 'err'}`;
-    showToast(res.ok ? 'Newsletter send triggered!' : 'Server returned an error', res.ok ? 'ok' : 'err');
+    if(res.ok && mode === 'preview'){
+      showToast(`Preview sent to ${preview} — check your inbox before sending to all`, 'ok');
+    } else if(res.ok){
+      showToast(`Newsletter sent to ${nlSubCount} subscribers!`, 'ok');
+    } else {
+      showToast('Server returned an error', 'err');
+    }
   } catch(e){
     resBox.textContent = `Network error: ${e.message}`;
     resBox.className   = 'response-box vis err';
     showToast('Network error', 'err');
   }
 
-  btn.disabled          = false;
+  document.getElementById('nl-preview-btn').disabled = false;
+  document.getElementById('nl-send-btn').disabled    = false;
   spinner.style.display = 'none';
 }
 
@@ -965,10 +1081,17 @@ function clearNlForm(){
   ['nl-issue','nl-subject','nl-preview-email'].forEach(id=>{ document.getElementById(id).value=''; });
   const rb = document.getElementById('nl-response');
   rb.className = 'response-box'; rb.textContent = '';
+  document.getElementById('nl-confirm').style.display = 'none';
 }
 
 /* ─── LOAD ALL ────────────────────────────────────────────────────── */
 async function loadAll(){
+  loadNlSubscriberCount();
+  // Wire issue number input to auto-update subject
+  const issueInput = document.getElementById('nl-issue');
+  if(issueInput) issueInput.addEventListener('input', updateNlSubject);
+  // Set initial subject
+  updateNlSubject();
   spinIcon('refresh-icon-ov');
   try{
     // Load overview + stats from a single full leads fetch
@@ -1000,77 +1123,147 @@ async function loadAll(){
 /* ─── CHAT TRANSCRIPTS ────────────────────────────────────────────── */
 let chatsLoaded = false;
 
+// ── Category helpers ───────────────────────────────────────────────────────
+const CAT_CONFIG = {
+  hot:      { label:'🔴 Hot',      style:'background:rgba(220,50,50,0.15);color:#ff6b6b;border:1px solid rgba(220,50,50,0.4)' },
+  warm:     { label:'🟡 Warm',     style:'background:rgba(240,200,74,0.12);color:#f0c84a;border:1px solid rgba(240,200,74,0.35)' },
+  browsing: { label:'👀 Browsing', style:'background:var(--raise);color:var(--dim);border:1px solid var(--border)' },
+  support:  { label:'🔧 Support',  style:'background:rgba(100,160,255,0.12);color:#7eb8ff;border:1px solid rgba(100,160,255,0.35)' },
+  faq:      { label:'❓ FAQ',      style:'background:rgba(180,100,255,0.12);color:#c084fc;border:1px solid rgba(180,100,255,0.35)' },
+};
+
+function inferCategory(g){
+  // Use stored category if available, else infer client-side
+  const stored = g.sessions.map(s=>s.category).find(c=>c && c!=='browsing');
+  if(stored) return stored;
+  if(g.contact_requested) return 'hot';
+  const allText = g.sessions.flatMap(s=>Array.isArray(s.messages)?s.messages:[])
+    .filter(m=>m.role==='user').map(m=>m.content||'').join(' ').toLowerCase();
+  if(/price|cost|plan|how much|solo|dealer pro|enterprise|subscribe|sign up|buy/.test(allText)) return 'warm';
+  if(/not working|broken|bug|error|can.t|doesn.t|issue|problem|help/.test(allText)) return 'support';
+  if(/cancel|refund|facebook ban|banned|dms|work with|compatible/.test(allText)) return 'faq';
+  const userMsgCount = g.sessions.flatMap(s=>Array.isArray(s.messages)?s.messages:[]).filter(m=>m.role==='user').length;
+  if(userMsgCount >= 3) return 'warm';
+  return 'browsing';
+}
+
+let allChatGroups = [];
+let currentFilter = 'all';
+
 function renderChatRows(data){
   const tbody = document.getElementById('tbl-chats-body');
   if(!data || !data.length){
-    tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">No chat sessions recorded yet.</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">No chat sessions recorded yet.</div></td></tr>`;
     return;
   }
 
-  // Group sessions by email, then by ip_hash, then by session_id
+  // Group sessions by email → ip_hash → session_id
   const grouped = {};
   data.forEach(r => {
     const key = r.visitor_email ? r.visitor_email.toLowerCase()
               : r.ip_hash       ? ('ip::' + r.ip_hash)
               : ('anon::' + r.session_id);
     if(!grouped[key]){
-      grouped[key] = { email: r.visitor_email, name: r.visitor_name, contact_requested: false, sessions: [], latest: r.created_at };
+      grouped[key] = { email: r.visitor_email, name: r.visitor_name, contact_requested: false, sessions: [], latest: r.created_at, allRead: true };
     }
     grouped[key].sessions.push(r);
     if(r.contact_requested) grouped[key].contact_requested = true;
     if(r.created_at > grouped[key].latest) grouped[key].latest = r.created_at;
+    if(!r.read_at) grouped[key].allRead = false;
   });
 
-  // Sort groups: contact_requested first, then by latest date
-  const groups = Object.values(grouped).sort((a,b) => {
-    if(a.contact_requested !== b.contact_requested) return a.contact_requested ? -1 : 1;
+  allChatGroups = Object.values(grouped).sort((a,b) => {
+    if(!a.allRead && b.allRead) return -1;
+    if(a.allRead && !b.allRead) return 1;
+    const ac = inferCategory(a), bc = inferCategory(b);
+    const order = {hot:0,warm:1,support:2,faq:3,browsing:4};
+    if(order[ac] !== order[bc]) return order[ac]-order[bc];
     return new Date(b.latest) - new Date(a.latest);
   });
 
+  applyChatFilter(currentFilter);
+}
+
+function applyChatFilter(filter){
+  currentFilter = filter;
+  const tbody = document.getElementById('tbl-chats-body');
+  const filtered = filter === 'all' ? allChatGroups
+    : filter === 'unread' ? allChatGroups.filter(g => !g.allRead)
+    : allChatGroups.filter(g => inferCategory(g) === filter);
+
+  if(!filtered.length){
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">No chats in this category.</div></td></tr>`;
+    document.getElementById('chats-count').textContent = `0 results`;
+    return;
+  }
+
   const rows = [];
-  groups.forEach((g, idx) => {
-    // Merge all messages across sessions for this visitor (chronological)
-    const allMessages = g.sessions.flatMap(s => Array.isArray(s.messages) ? s.messages : [])
-      .sort((a,b) => (a.ts||'') < (b.ts||'') ? -1 : 1);
+  filtered.forEach((g, idx) => {
+    // Merge + deduplicate messages across sessions
+    const seen = new Set();
+    const allMessages = g.sessions
+      .sort((a,b) => (a.created_at||'') < (b.created_at||'') ? -1 : 1)
+      .flatMap((s, si) => {
+        const msgs = Array.isArray(s.messages) ? s.messages : [];
+        const divider = si > 0 ? [{ role: '__divider__', content: `Session ${si+1}`, ts: s.created_at }] : [];
+        return [...divider, ...msgs];
+      })
+      .filter(m => {
+        if(m.role === '__divider__') return true;
+        const key = m.role + '::' + (m.content||'').trim().toLowerCase();
+        if(seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
 
-    const contactClass = g.contact_requested ? 'chat-contact-row' : '';
-    const contactBadge = g.contact_requested
-      ? '<span class="badge" style="background:rgba(240,200,74,0.15);color:#f0c84a;border:1px solid rgba(240,200,74,0.35)">CONTACT</span>'
-      : '<span class="badge" style="background:var(--raise);color:var(--dim);border:1px solid var(--border)">browsing</span>';
+    const cat     = inferCategory(g);
+    const catCfg  = CAT_CONFIG[cat] || CAT_CONFIG.browsing;
+    const isUnread = !g.allRead;
+    const unreadDot = isUnread ? '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#4a9eff;flex-shrink:0;margin-top:3px"></span>' : '<span style="display:inline-block;width:8px;height:8px"></span>';
 
-    // Summary: use AI summary if available, else first meaningful user message
-    const aiSummary = g.sessions.map(s => s.ai_summary).find(s => s);
-    const userMsgs = allMessages.filter(m => m.role === 'user');
-    const firstMeaningful = userMsgs.find(m => m.content && m.content.length > 3)?.content || '';
+    // Summary
+    const aiSummary = g.sessions.map(s=>s.ai_summary).find(s=>s);
+    const userMsgs = allMessages.filter(m=>m.role==='user' && (m.content||'').length > 3);
     let preview;
     if(aiSummary){
-      preview = `<span style="color:var(--amber);font-size:10px;letter-spacing:1px;margin-right:6px">AI</span>${esc(aiSummary)}`;
+      preview = `<span style="color:var(--amber);font-size:9px;letter-spacing:1px;margin-right:5px;font-family:'JetBrains Mono',monospace">AI</span>${esc(aiSummary)}`;
+    } else if(userMsgs.length){
+      const txt = userMsgs[0].content;
+      preview = esc(txt.length > 90 ? txt.slice(0,88)+'…' : txt);
     } else {
-      preview = firstMeaningful.length > 90 ? esc(firstMeaningful.slice(0,88)) + '…' : esc(firstMeaningful);
+      preview = `<span style="color:var(--dim);font-style:italic">No messages</span>`;
     }
 
-    const displayName = g.name ? `<span style="color:var(--amber)">${esc(g.name)}</span> ` : '';
-    const drawerId = 'drawer-' + idx;
-    const sessionCount = g.sessions.length > 1 ? `<span style="color:var(--dim);font-size:10px"> (${g.sessions.length} sessions)</span>` : '';
+    const displayName = g.name ? `<span style="color:var(--amber);font-weight:500">${esc(g.name)}</span><br>` : '';
+    const emailLine = esc(g.email || 'anonymous visitor');
+    const sessionCount = g.sessions.length > 1 ? ` <span style="color:var(--dim);font-size:10px">(${g.sessions.length})</span>` : '';
+    const drawerId = `drawer-${idx}`;
+    const sessionIds = JSON.stringify(g.sessions.map(s=>s.session_id));
 
     rows.push(`
-      <tr class="${contactClass}" style="cursor:pointer" onclick="toggleTranscript('${drawerId}', this)">
-        <td class="mono">${displayName}${esc(g.email || 'anonymous')}${sessionCount}</td>
-        <td style="font-size:11px;color:var(--text-muted);max-width:300px;overflow:hidden">${preview}</td>
-        <td style="text-align:center">${contactBadge}</td>
+      <tr class="${cat==='hot'?'chat-contact-row':''}" style="cursor:pointer;opacity:${g.allRead?'0.7':'1'}"
+          onclick="toggleTranscript('${drawerId}',this,'${drawerId}',${sessionIds.replace(/"/g,'&quot;')})">
+        <td style="vertical-align:middle;padding-right:4px">${unreadDot}</td>
+        <td class="mono" style="line-height:1.5">${displayName}${emailLine}${sessionCount}</td>
+        <td style="font-size:11px;color:var(--text);max-width:280px">${preview}</td>
+        <td style="text-align:center"><span class="badge" style="${catCfg.style}">${catCfg.label}</span></td>
         <td class="mono" style="white-space:nowrap">${fmtDate(g.latest)}</td>
       </tr>
       <tr class="transcript-drawer" id="${drawerId}">
-        <td colspan="4">
-          <div class="transcript-inner" id="inner-${drawerId}">
-            ${renderTranscriptBubbles(allMessages)}
-          </div>
+        <td colspan="5">
+          <div class="transcript-inner">${renderTranscriptBubbles(allMessages)}</div>
         </td>
       </tr>`);
   });
 
   tbody.innerHTML = rows.join('');
-  document.getElementById('chats-count').textContent = `${groups.length} visitors (${data.length} sessions)`;
+  document.getElementById('chats-count').textContent = `${filtered.length} visitors · ${filter==='unread'?'unread':'category: '+filter}`;
+}
+
+function filterChats(cat, el){
+  document.querySelectorAll('.chat-filter').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  applyChatFilter(cat);
 }
 
 function renderTranscriptBubbles(messages){
@@ -1078,25 +1271,45 @@ function renderTranscriptBubbles(messages){
     return '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:var(--dim)">No messages recorded.</span>';
   }
   return messages.map(m => {
-    const role = (m.role === 'user') ? 'user' : 'assistant';
+    // Session divider
+    if(m.role === '__divider__'){
+      return `<div style="text-align:center;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:2px;color:var(--dim);border-top:1px solid var(--border);padding-top:10px">── ${esc(m.content)} ──</div>`;
+    }
+    const role  = m.role === 'user' ? 'user' : 'assistant';
     const label = role === 'user' ? 'Visitor' : 'Ava';
-    const ts = m.ts ? new Date(m.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) : '';
+    const ts    = m.ts ? new Date(m.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) : '';
     return `
       <div class="transcript-bubble-row ${role}">
         <div>
           <div class="transcript-bubble">${esc(m.content || '')}</div>
-          <div class="transcript-ts">${esc(label)}${ts ? ' &middot; ' + ts : ''}</div>
+          <div class="transcript-ts">${esc(label)}${ts?' &middot; '+ts:''}</div>
         </div>
       </div>`;
   }).join('');
 }
 
-function toggleTranscript(drawerId, clickedRow){
-  // Don't re-toggle when clicking on the drawer row itself
+async function toggleTranscript(drawerId, clickedRow, groupDrawerId, sessionIds){
   if(clickedRow.classList.contains('transcript-drawer')) return;
   const drawer = document.getElementById(drawerId);
   if(!drawer) return;
+  const opening = !drawer.classList.contains('open');
   drawer.classList.toggle('open');
+
+  // Mark as read when opening
+  if(opening && sessionIds && sessionIds.length){
+    const unreadDot = clickedRow.querySelector('span[style*="4a9eff"]');
+    if(unreadDot){ unreadDot.style.background = 'transparent'; }
+    clickedRow.style.opacity = '0.7';
+    // Patch read_at for all sessions in this group
+    try {
+      const key = getApiKey();
+      await fetch(`${SUPABASE_URL}/rest/v1/chat_sessions?session_id=in.(${sessionIds.map(id=>`"${id}"`).join(',')})`, {
+        method: 'PATCH',
+        headers: { 'apikey': key, 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ read_at: new Date().toISOString() }),
+      });
+    } catch(e){ console.warn('[admin] mark read failed:', e); }
+  }
 }
 
 async function loadChats(force=false){
