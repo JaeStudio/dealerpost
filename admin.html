@@ -1007,10 +1007,12 @@ function renderChatRows(data){
     return;
   }
 
-  // Group sessions by email (or by session_id if no email)
+  // Group sessions by email, then by ip_hash, then by session_id
   const grouped = {};
   data.forEach(r => {
-    const key = r.visitor_email ? r.visitor_email.toLowerCase() : ('anon::' + r.session_id);
+    const key = r.visitor_email ? r.visitor_email.toLowerCase()
+              : r.ip_hash       ? ('ip::' + r.ip_hash)
+              : ('anon::' + r.session_id);
     if(!grouped[key]){
       grouped[key] = { email: r.visitor_email, name: r.visitor_name, contact_requested: false, sessions: [], latest: r.created_at };
     }
@@ -1036,14 +1038,15 @@ function renderChatRows(data){
       ? '<span class="badge" style="background:rgba(240,200,74,0.15);color:#f0c84a;border:1px solid rgba(240,200,74,0.35)">CONTACT</span>'
       : '<span class="badge" style="background:var(--raise);color:var(--dim);border:1px solid var(--border)">browsing</span>';
 
-    // Summary: first user message + last user message if different
+    // Summary: use AI summary if available, else first meaningful user message
+    const aiSummary = g.sessions.map(s => s.ai_summary).find(s => s);
     const userMsgs = allMessages.filter(m => m.role === 'user');
-    const firstMsg = userMsgs[0]?.content || '';
-    const lastMsg  = userMsgs[userMsgs.length - 1]?.content || '';
-    let preview = firstMsg.length > 80 ? firstMsg.slice(0, 78) + '…' : firstMsg;
-    if(userMsgs.length > 1 && lastMsg !== firstMsg){
-      const lastPreview = lastMsg.length > 50 ? lastMsg.slice(0,48)+'…' : lastMsg;
-      preview += `<span style="color:var(--dim)"> → ${esc(lastPreview)}</span>`;
+    const firstMeaningful = userMsgs.find(m => m.content && m.content.length > 3)?.content || '';
+    let preview;
+    if(aiSummary){
+      preview = `<span style="color:var(--amber);font-size:10px;letter-spacing:1px;margin-right:6px">AI</span>${esc(aiSummary)}`;
+    } else {
+      preview = firstMeaningful.length > 90 ? esc(firstMeaningful.slice(0,88)) + '…' : esc(firstMeaningful);
     }
 
     const displayName = g.name ? `<span style="color:var(--amber)">${esc(g.name)}</span> ` : '';
