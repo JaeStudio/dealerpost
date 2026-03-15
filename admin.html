@@ -458,7 +458,7 @@ tbody tr.opted-out td{color:var(--dim)}
         autocomplete="off"
         spellcheck="false"
       >
-      <span class="gate-api-note">Find in: Supabase Dashboard &rarr; Settings &rarr; API &rarr; <em>anon public</em></span>
+      <span class="gate-api-note">Find in: Supabase Dashboard &rarr; Settings &rarr; API &rarr; <em>service_role</em> (required to read data)</span>
     </div>
     <div class="gate-error" id="gate-err"></div>
     <button class="gate-btn" id="gate-btn">Enter Dashboard</button>
@@ -498,7 +498,7 @@ tbody tr.opted-out td{color:var(--dim)}
         Chats
       </div>
     </nav>
-    <div class="sidebar-footer">v1.0 &middot; DPAI</div>
+    <div class="sidebar-footer" style="cursor:pointer;color:var(--amber)" onclick="logout()">&#x2192; Log Out</div>
   </aside>
 
   <!-- MAIN -->
