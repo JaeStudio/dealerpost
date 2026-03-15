@@ -19,7 +19,7 @@
   --plat:#9ec4e8;--plat2:#b8d8f8;--plat3:#d8ecff;
 }
 html{scroll-behavior:smooth}
-body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;font-weight:300}
+body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;font-weight:400}
 
 /* CURSOR */
 #cd{position:fixed;width:4px;height:4px;background:var(--gold3);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
@@ -31,18 +31,18 @@ body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;o
 .bg-vig{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 40%,rgba(2,2,10,.75) 100%)}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
-nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
-.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
-.nav-logo-img{height:44px;width:auto;object-fit:contain;flex-shrink:0;display:block;overflow:visible;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
+nav.stuck{padding:10px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
+.nav-brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.nav-logo-img{height:46px;width:46px;object-fit:contain;flex-shrink:0;display:block;overflow:visible;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s}
 .nav-brand:hover .nav-logo-img{filter:drop-shadow(0 0 18px rgba(240,200,74,.65))}
 /* Hide legacy inline SVG, show only img logo */
-
-.nav-wordmark{font-family:'Syncopate',sans-serif;font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.8)}
+.nav-wordmark{font-family:'Syncopate',sans-serif;font-size:13px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:rgba(238,238,248,.95)}
 .nav-wordmark em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-wordmark .ai{color:rgba(238,238,248,.95);-webkit-text-fill-color:rgba(238,238,248,.95)}
 .nav-v{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:2px;color:var(--dim);border:1px solid var(--bh);padding:2px 7px;border-radius:2px}
 .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
-.nav-links a{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(238,238,248,.78);text-decoration:none;transition:color .2s}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(238,238,248,.95);text-decoration:none;transition:color .2s}
 .nav-links a:hover{color:var(--gold3)}
 .nav-links a.active{color:var(--gold2)}
 .nav-cta{color:var(--text) !important;background:var(--solid-gold);padding:10px 24px;border-radius:3px;box-shadow:0 4px 20px rgba(184,131,30,.3);transition:all .3s !important;letter-spacing:1.5px !important}
@@ -380,10 +380,8 @@ footer{position:relative;z-index:2;padding:80px 64px 0}
 <!-- NAV -->
 <nav id="nav">
   <a class="nav-brand" href="index.html">
-    <img src="dealerpost-logo.jpg?v=4" alt="DealerPost AI" style="height:44px;width:44px;object-fit:contain;display:block;background:transparent;filter:drop-shadow(0 0 10px rgba(200,146,42,.55));transition:filter .3s;">
-    
-    <span class="nav-wordmark">DEALER<em>POST</em></span>
-    <span class="nav-v">V17</span>
+    <img src="dealerpost-logo.jpg?v=4" alt="DealerPost Logo" style="height:60px;width:60px;object-fit:contain;display:block;background:transparent;filter:drop-shadow(0 0 10px rgba(200,146,42,.55));transition:filter .3s;">
+    <span class="nav-wordmark">DEALER<em>POST</em> <span class="ai">AI</span></span>
   </a>
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>

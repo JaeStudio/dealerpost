@@ -16,7 +16,7 @@
   --b:rgba(200,146,42,.09);--bh:rgba(200,146,42,.22);
 }
 html{scroll-behavior:smooth}
-body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;font-weight:300}
+body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none;font-weight:400}
 
 #cd{position:fixed;width:4px;height:4px;background:var(--gold3);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}
 #cr{position:fixed;width:30px;height:30px;border:1px solid rgba(240,200,74,.28);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .35s cubic-bezier(.23,1,.32,1),height .35s cubic-bezier(.23,1,.32,1),border-color .3s}
@@ -33,15 +33,16 @@ body{background:var(--void);color:var(--text);font-family:'DM Sans',sans-serif;o
     radial-gradient(ellipse 40% 35% at 82% 30%, rgba(240,200,74,.035) 0%, transparent 65%);
 }
 
-nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:20px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
-nav.stuck{padding:12px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
-.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none}
-.nav-logo-img{height:44px;width:auto;object-fit:contain;background:transparent;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s;flex-shrink:0;display:block}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:16px 64px;display:flex;align-items:center;justify-content:space-between;transition:all .5s cubic-bezier(.23,1,.32,1);border-bottom:1px solid transparent}
+nav.stuck{padding:10px 64px;background:rgba(2,2,10,.92);backdrop-filter:blur(28px) saturate(1.5);border-color:var(--b)}
+.nav-brand{display:flex;align-items:center;gap:14px;text-decoration:none}
+.nav-logo-img{height:46px;width:46px;object-fit:contain;background:transparent;filter:drop-shadow(0 0 8px rgba(200,146,42,.4));transition:filter .4s;flex-shrink:0;display:block}
 .nav-brand:hover .nav-logo-img{filter:drop-shadow(0 0 18px rgba(240,200,74,.65))}
-.nav-wordmark{font-family:'Syncopate',sans-serif;font-size:11px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:rgba(238,238,248,.8)}
+.nav-wordmark{font-family:'Syncopate',sans-serif;font-size:13px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:rgba(238,238,248,.95)}
 .nav-wordmark em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-wordmark .ai{color:rgba(238,238,248,.95);-webkit-text-fill-color:rgba(238,238,248,.95)}
 .nav-links{display:flex;align-items:center;gap:36px;list-style:none}
-.nav-links a{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(238,238,248,.78);text-decoration:none;transition:color .2s}
+.nav-links a{font-size:11px;font-weight:400;letter-spacing:2px;text-transform:uppercase;color:rgba(238,238,248,.95);text-decoration:none;transition:color .2s}
 .nav-links a:hover,.nav-links a.active{color:var(--gold3)}
 .nav-cta{color:var(--text) !important;background:var(--solid-gold);padding:10px 24px;border-radius:3px;box-shadow:0 4px 20px rgba(184,131,30,.3);transition:all .3s !important;letter-spacing:1.5px !important}
 .nav-cta:hover{background:var(--gold2) !important;transform:translateY(-1px);box-shadow:0 8px 32px rgba(184,131,30,.45) !important}
@@ -267,8 +268,8 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
 
 <nav id="nav">
   <a href="index.html" class="nav-brand">
-    <img src="dealerpost-logo.jpg?v=4" alt="DealerPost AI" style="height:44px;width:44px;object-fit:contain;display:block;background:transparent;filter:drop-shadow(0 0 10px rgba(200,146,42,.55));transition:filter .3s;">
-    <span class="nav-wordmark">Dealer<em>Post</em> AI</span>
+    <img src="dealerpost-logo.jpg?v=4" alt="DealerPost Logo" style="height:60px;width:60px;object-fit:contain;display:block;background:transparent;filter:drop-shadow(0 0 10px rgba(200,146,42,.55));transition:filter .3s;">
+    <span class="nav-wordmark">DEALER<em>POST</em> <span class="ai">AI</span></span>
   </a>
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
   <ul class="nav-links" id="navLinks">
@@ -317,7 +318,7 @@ footer{position:relative;z-index:2;border-top:1px solid var(--b);padding:32px 64
           <div class="ci-icon">&#x1F916;</div>
           <div>
             <div class="ci-label">Instant Help</div>
-            <div class="ci-val">Chat with Ava &mdash; bottom right corner</div>
+            <div class="ci-val">Chat with Ava &mdash; bottom left corner</div>
           </div>
         </div>
       </div>
