@@ -428,6 +428,40 @@ tbody tr.opted-out td{color:var(--dim)}
 .nl-type-btn:hover{ border-color:var(--amber);color:var(--text); }
 .nl-type-btn.active{ border-color:var(--amber);background:rgba(200,146,42,.12);color:var(--amber); }
 
+/* ─── TEMPLATE CARDS ─────────────────────────────────────── */
+.nl-template-card{
+  padding:14px 14px 14px 12px;border-radius:10px;border:2px solid var(--border);
+  cursor:pointer;transition:all .2s;position:relative;overflow:hidden;
+  background:var(--raise);
+}
+.nl-template-card:hover{ border-color:var(--amber); }
+.nl-template-card.active{ border-color:var(--amber);box-shadow:0 0 20px rgba(240,200,74,.10); }
+.nl-template-card .tpl-name{font-size:12px;font-weight:600;margin-bottom:3px;color:var(--text);}
+.nl-template-card .tpl-desc{font-size:10px;color:var(--dim);line-height:1.4;}
+.nl-template-card .tpl-swatch{
+  position:absolute;top:0;right:0;width:5px;height:100%;
+}
+.nl-template-card[data-tpl="dark_gold"] .tpl-swatch{background:linear-gradient(180deg,#f0c84a,#c8922a);}
+.nl-template-card[data-tpl="luxury"]    .tpl-swatch{background:linear-gradient(180deg,#c8b99a,#2a3a5c);}
+.nl-template-card[data-tpl="sporty"]    .tpl-swatch{background:linear-gradient(180deg,#ff6b2b,#1a1a1a);}
+
+/* ─── SEND GROUP ─────────────────────────────────────────── */
+.nl-group-btn{
+  padding:9px 16px;font-size:11px;font-family:'JetBrains Mono',monospace;
+  border-radius:6px;border:1px solid var(--border);background:var(--raise);
+  color:var(--dim);cursor:pointer;transition:all .15s;
+}
+.nl-group-btn:hover{ border-color:var(--amber);color:var(--text); }
+.nl-group-btn.active{ border-color:var(--amber);background:rgba(200,146,42,.12);color:var(--amber); }
+
+/* ─── TOPIC HISTORY ──────────────────────────────────────── */
+.topic-tag{
+  display:inline-block;padding:3px 9px;border-radius:20px;
+  font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:.4px;
+  background:rgba(240,200,74,.06);border:1px solid rgba(240,200,74,.14);
+  color:var(--dim);margin:3px;
+}
+
 /* ─── SCROLLBAR ──────────────────────────────────────────── */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -611,7 +645,7 @@ tbody tr.opted-out td{color:var(--dim)}
       <div id="sec-newsletters" style="display:none">
         <div class="section-card">
           <div class="section-head">
-            <span class="section-title">Newsletter Sends (last 50)</span>
+            <span class="section-title">Newsletter Campaigns</span>
             <button class="btn-icon" onclick="loadNewsletters(true)">
               <svg id="refresh-icon-nl" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
               Refresh
@@ -620,13 +654,24 @@ tbody tr.opted-out td{color:var(--dim)}
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th>Recipient</th><th>Issue #</th><th>Subject</th><th>Sent Date</th></tr>
+                <tr><th>Issue #</th><th>Subject</th><th>Topic</th><th>Template</th><th style="text-align:center">Recipients</th><th>Sent</th><th style="text-align:center">Actions</th></tr>
               </thead>
               <tbody id="tbl-nl-body">
-                <tr class="loading-row"><td colspan="4">Loading&hellip;</td></tr>
+                <tr class="loading-row"><td colspan="7">Loading&hellip;</td></tr>
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      <!-- Campaign preview modal -->
+      <div id="nl-preview-modal" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(2,2,10,.85);align-items:center;justify-content:center;padding:24px">
+        <div style="background:var(--card);border:1px solid var(--border-mid);border-radius:14px;padding:32px;max-width:680px;width:100%;max-height:80vh;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--amber);letter-spacing:.5px" id="nl-preview-modal-title"></div>
+            <button class="btn-icon" onclick="document.getElementById('nl-preview-modal').style.display='none'" style="flex-shrink:0">✕ Close</button>
+          </div>
+          <div id="nl-preview-modal-body" style="font-size:13px;line-height:1.7;color:var(--text);overflow-y:auto;white-space:pre-wrap;flex:1;padding-right:4px"></div>
         </div>
       </div>
 
@@ -638,6 +683,38 @@ tbody tr.opted-out td{color:var(--dim)}
             <span id="nl-sub-count" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)">Loading subscribers…</span>
           </div>
           <div class="form-body">
+
+            <!-- Template selector -->
+            <div class="form-group full" style="margin-bottom:18px">
+              <label class="form-label">Email Template</label>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px">
+                <div class="nl-template-card active" data-tpl="dark_gold" onclick="selectNlTemplate(this)">
+                  <div class="tpl-swatch"></div>
+                  <div class="tpl-name">Dark Gold</div>
+                  <div class="tpl-desc">Deep black + gold highlights. Classic DealerPost brand.</div>
+                </div>
+                <div class="nl-template-card" data-tpl="luxury" onclick="selectNlTemplate(this)">
+                  <div class="tpl-swatch"></div>
+                  <div class="tpl-name">Luxury</div>
+                  <div class="tpl-desc">Navy + platinum serif. Premium, white-glove feel.</div>
+                </div>
+                <div class="nl-template-card" data-tpl="sporty" onclick="selectNlTemplate(this)">
+                  <div class="tpl-swatch"></div>
+                  <div class="tpl-name">Sporty</div>
+                  <div class="tpl-desc">Dark + orange punch. Bold, high-energy tone.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Send group selector -->
+            <div class="form-group full" style="margin-bottom:18px">
+              <label class="form-label">Send To</label>
+              <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+                <button class="nl-group-btn active" data-group="all"          onclick="selectNlGroup(this)">📬 All Subscribers</button>
+                <button class="nl-group-btn"        data-group="not_received" onclick="selectNlGroup(this)">🆕 Haven't Received This Issue</button>
+                <button class="nl-group-btn"        data-group="new_only"     onclick="selectNlGroup(this)">✨ New Subscribers Only</button>
+              </div>
+            </div>
 
             <!-- Content type selector -->
             <div class="form-group full" style="margin-bottom:18px">
@@ -666,6 +743,18 @@ tbody tr.opted-out td{color:var(--dim)}
               <div class="form-group full">
                 <label class="form-label">Subject Line <span style="color:var(--dim)">(auto-generated, editable)</span></label>
                 <input class="form-input" type="text" id="nl-subject" placeholder="Select a content type above…">
+              </div>
+            </div>
+
+            <!-- Topic history -->
+            <div class="form-group full" style="margin-bottom:18px">
+              <label class="form-label" style="display:flex;align-items:center;gap:8px">
+                Recent Topics
+                <span style="font-size:10px;color:var(--dim);font-weight:400">(AI won't repeat these)</span>
+                <button class="btn-icon" onclick="loadTopicHistory()" style="margin-left:auto;font-size:10px">↻ Refresh</button>
+              </label>
+              <div id="nl-topic-history" style="margin-top:8px;min-height:28px">
+                <span style="font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace">Loading…</span>
               </div>
             </div>
 
@@ -821,6 +910,7 @@ function showSection(id, el){
   if(id==='leads')       loadLeads();
   if(id==='newsletters') loadNewsletters();
   if(id==='chats')       loadChats();
+  if(id==='send')        loadTopicHistory();
 }
 
 /* ─── SUPABASE FETCH ──────────────────────────────────────────────── */
@@ -948,35 +1038,103 @@ function updateLeadStats(data){
 }
 
 /* ─── NEWSLETTER SENDS ────────────────────────────────────────────── */
-let nlLoaded = false;
+let nlLoaded    = false;
+let nlCampaigns = [];
 
-async function loadNewsletters(force=false){
+async function loadNewsletters(force = false){
   if(nlLoaded && !force) return;
   spinIcon('refresh-icon-nl');
   document.getElementById('tbl-nl-body').innerHTML =
-    `<tr class="loading-row"><td colspan="4">Loading&hellip;</td></tr>`;
+    `<tr class="loading-row"><td colspan="7">Loading&hellip;</td></tr>`;
   try{
-    const data = await sbFetch('newsletter_sends?select=*&order=sent_at.desc&limit=50');
+    const data = await sbFetch('newsletter_sends?select=*&order=sent_at.desc&limit=500');
     nlLoaded = true;
-    document.getElementById('stat-nl').textContent = data.length;
-    if(!data.length){
+    // Group by issue_number
+    const campaigns = new Map();
+    for(const row of (data||[])){
+      const key = row.issue_number || 'unknown';
+      if(!campaigns.has(key)){
+        campaigns.set(key, {
+          issue_number:  row.issue_number,
+          subject:       row.subject,
+          topic:         row.topic_keywords,
+          template:      row.template || 'dark_gold',
+          content_text:  row.content_text,
+          storage_path:  row.storage_path,
+          sent_at:       row.sent_at,
+          count:         0,
+        });
+      }
+      campaigns.get(key).count++;
+    }
+    const list = [...campaigns.values()].sort((a,b)=> b.issue_number - a.issue_number);
+    document.getElementById('stat-nl').textContent = list.length;
+    if(!list.length){
       document.getElementById('tbl-nl-body').innerHTML =
-        `<tr><td colspan="4"><div class="empty-state">No newsletter sends logged yet.</div></td></tr>`;
+        `<tr><td colspan="7"><div class="empty-state">No newsletter sends logged yet.</div></td></tr>`;
     } else {
-      document.getElementById('tbl-nl-body').innerHTML = data.map(r=>`
-        <tr>
-          <td class="mono">${esc(r.recipient||r.email||'—')}</td>
-          <td class="mono" style="text-align:center">${esc(String(r.issue_number||r.issue||'—'))}</td>
-          <td>${esc(r.subject||'—')}</td>
-          <td class="mono" style="white-space:nowrap">${fmtDate(r.sent_at||r.created_at)}</td>
-        </tr>`).join('');
+      nlCampaigns = [];
+      document.getElementById('tbl-nl-body').innerHTML = list.map((c, i) => {
+        nlCampaigns[i] = c;
+        const tplLabel = ({dark_gold:'🟡 Dark Gold', luxury:'💠 Luxury', sporty:'🔶 Sporty'})[c.template] || c.template || '—';
+        return `<tr>
+          <td style="font-family:'JetBrains Mono',monospace;color:var(--amber)">#${c.issue_number||'?'}</td>
+          <td style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(c.subject||'')}">${esc(c.subject||'')}</td>
+          <td style="font-size:11px;color:var(--dim);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(c.topic||'')}">${esc(c.topic||'—')}</td>
+          <td style="font-size:11px">${tplLabel}</td>
+          <td style="text-align:center;font-family:'JetBrains Mono',monospace">${c.count}</td>
+          <td style="font-size:11px;color:var(--dim)">${c.sent_at ? new Date(c.sent_at).toLocaleDateString() : '—'}</td>
+          <td style="text-align:center">
+            <div style="display:flex;gap:6px;justify-content:center">
+              ${c.content_text ? `<button class="btn-icon" onclick="previewCampaign(${i})" title="Preview content">👁 Preview</button>` : ''}
+              <button class="btn-icon" onclick="resendCampaign(${i})" title="Resend to who didn't get this" style="color:var(--amber)">↻ Resend</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
     }
   } catch(e){
     document.getElementById('tbl-nl-body').innerHTML =
-      `<tr><td colspan="4" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px">Error: ${esc(e.message)}</td></tr>`;
+      `<tr><td colspan="7" style="color:var(--red);font-family:'JetBrains Mono',monospace;font-size:11px;text-align:center;padding:24px">Error: ${esc(e.message)}</td></tr>`;
     showToast('Failed to load newsletter sends', 'err');
   }
   stopSpin('refresh-icon-nl');
+}
+
+function previewCampaign(idx){
+  const c = nlCampaigns[idx];
+  if(!c) return;
+  document.getElementById('nl-preview-modal-title').textContent = `Issue #${c.issue_number} — ${c.subject||''}`;
+  document.getElementById('nl-preview-modal-body').textContent  = c.content_text || 'No content snapshot available.';
+  document.getElementById('nl-preview-modal').style.display = 'flex';
+}
+
+function resendCampaign(idx){
+  const c = nlCampaigns[idx];
+  if(!c) return;
+  // Switch to Send tab
+  const sendNavItem = document.querySelector('.nav-item[onclick*="\'send\'"]');
+  showSection('send', sendNavItem);
+  if(sendNavItem){
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    sendNavItem.classList.add('active');
+  }
+  // Pre-fill fields after a brief delay for section to render
+  setTimeout(()=>{
+    const issueEl   = document.getElementById('nl-issue');
+    const subjectEl = document.getElementById('nl-subject');
+    if(issueEl)   issueEl.value   = c.issue_number;
+    if(subjectEl) subjectEl.value = c.subject || '';
+    // Set template
+    if(c.template){
+      const tplCard = document.querySelector(`.nl-template-card[data-tpl="${c.template}"]`);
+      if(tplCard) selectNlTemplate(tplCard);
+    }
+    // Set send group to not_received
+    const grpBtn = document.querySelector('.nl-group-btn[data-group="not_received"]');
+    if(grpBtn) selectNlGroup(grpBtn);
+    showToast(`Ready to resend Issue #${c.issue_number} to subscribers who haven't received it`, 'ok');
+  }, 100);
 }
 
 /* ─── SEND NEWSLETTER ─────────────────────────────────────────────── */
@@ -991,14 +1149,44 @@ const NL_SUBJECTS = {
   "This Week's Play": n => `🎯 The Dispatch #${n} — This Week's Play: Run It Now`,
 };
 
-let selectedNlType = 'Quick Win';
-let nlSubCount = 0;
+let selectedNlType     = 'Quick Win';
+let selectedNlTemplate = 'dark_gold';
+let selectedNlGroup    = 'all';
+let nlSubCount         = 0;
 
 function selectNlType(el){
   document.querySelectorAll('.nl-type-btn').forEach(b=>b.classList.remove('active'));
   el.classList.add('active');
   selectedNlType = el.dataset.type;
   updateNlSubject();
+}
+
+function selectNlTemplate(el){
+  document.querySelectorAll('.nl-template-card').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  selectedNlTemplate = el.dataset.tpl;
+}
+
+function selectNlGroup(el){
+  document.querySelectorAll('.nl-group-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  selectedNlGroup = el.dataset.group;
+}
+
+async function loadTopicHistory(){
+  const el = document.getElementById('nl-topic-history');
+  el.innerHTML = '<span style="font-size:11px;color:var(--dim);font-family:\'JetBrains Mono\',monospace">Loading…</span>';
+  try{
+    const data = await sbFetch('newsletter_sends?select=topic_keywords,sent_at&order=sent_at.desc&limit=20');
+    const topics = (data||[]).map(r=>r.topic_keywords).filter(Boolean);
+    if(!topics.length){
+      el.innerHTML = '<span style="font-size:11px;color:var(--dim);font-family:\'JetBrains Mono\',monospace">No sends yet</span>';
+      return;
+    }
+    el.innerHTML = topics.map(t=>`<span class="topic-tag">${esc(t)}</span>`).join('');
+  } catch(e){
+    el.innerHTML = '<span style="font-size:11px;color:var(--red);font-family:\'JetBrains Mono\',monospace">Failed to load</span>';
+  }
 }
 
 function updateNlSubject(){
@@ -1020,9 +1208,11 @@ async function loadNlSubscriberCount(){
 function confirmSendAll(){
   const subject = document.getElementById('nl-subject').value.trim();
   if(!subject){ showToast('Enter a subject line first', 'err'); return; }
+  const groupLabels = { all:'all', not_received:'subscribers who haven\'t received this issue', new_only:'new subscribers only' };
+  const tplLabels   = { dark_gold:'Dark Gold', luxury:'Luxury', sporty:'Sporty' };
   const conf = document.getElementById('nl-confirm');
   document.getElementById('nl-confirm-msg').textContent =
-    `This will send "${subject}" to all ${nlSubCount} subscribers. This cannot be undone.`;
+    `Send "${subject}" (${tplLabels[selectedNlTemplate]} template) to ${groupLabels[selectedNlGroup]}. This cannot be undone.`;
   conf.style.display = 'block';
   conf.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -1044,7 +1234,7 @@ async function sendNewsletter(mode){
   spinner.style.display = 'inline';
   resBox.className = 'response-box';
 
-  const payload = { subject };
+  const payload = { subject, template: selectedNlTemplate, send_group: selectedNlGroup };
   if(issueVal) payload.issue = parseInt(issueVal, 10);
   if(mode === 'preview') payload.preview_to = preview;
 
@@ -1087,6 +1277,7 @@ function clearNlForm(){
 /* ─── LOAD ALL ────────────────────────────────────────────────────── */
 async function loadAll(){
   loadNlSubscriberCount();
+  loadTopicHistory();
   // Wire issue number input to auto-update subject
   const issueInput = document.getElementById('nl-issue');
   if(issueInput) issueInput.addEventListener('input', updateNlSubject);
@@ -1111,10 +1302,11 @@ async function loadAll(){
   }
   stopSpin('refresh-icon-ov');
 
-  // Also fetch newsletter count separately
+  // Also fetch newsletter count separately (count distinct campaigns by issue_number)
   try{
-    const nlData = await sbFetch('newsletter_sends?select=id');
-    document.getElementById('stat-nl').textContent = (nlData||[]).length;
+    const nlData = await sbFetch('newsletter_sends?select=issue_number');
+    const distinctIssues = new Set((nlData||[]).map(r=>r.issue_number)).size;
+    document.getElementById('stat-nl').textContent = distinctIssues;
   } catch(e){
     document.getElementById('stat-nl').textContent = 'Err';
   }

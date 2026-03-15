@@ -88,7 +88,11 @@
       'transition:opacity 0.3s cubic-bezier(.16,1,.3,1),transform 0.3s cubic-bezier(.16,1,.3,1);',
       'font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;',
       'backdrop-filter:blur(24px);',
+      'cursor:auto;',
     '}',
+    '#dp-chat-window *{cursor:auto;}',
+    '#dp-chat-input{cursor:text !important;}',
+    '#dp-chat-toggle,#dp-chat-close,#dp-send-btn{cursor:pointer !important;}',
     '#dp-chat-window.dp-open{opacity:1;pointer-events:all;transform:translateY(0) scale(1);}',
 
     /* ── Header ────────────────────────────────────────────────────────────── */
